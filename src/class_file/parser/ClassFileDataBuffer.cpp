@@ -1,4 +1,4 @@
-#include "ClassFileDataBuffer.h"
+#include "ClassFileDataBuffer.hpp"
 
 #include <iostream>
 #include <fstream>

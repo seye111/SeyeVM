@@ -1,8 +1,8 @@
 #ifndef CLASSFILE_MEMBER_H
 #define CLASSFILE_MEMBER_H
 
-#include "Attribute.h"
-#include "../internal/AccessControlled.h"
+#include "Attribute.hpp"
+#include "../internal/AccessControlled.hpp"
 
 #include <vector>
 

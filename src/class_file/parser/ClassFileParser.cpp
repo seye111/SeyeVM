@@ -1,5 +1,5 @@
-#include "ClassFileParser.h"
-#include "ClassFileDataBuffer.h"
+#include "ClassFileParser.hpp"
+#include "ClassFileDataBuffer.hpp"
 
 #include <iostream>
 #include <sstream>

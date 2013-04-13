@@ -1,8 +1,8 @@
 #ifndef CLASSFILE_CLASSFILEREPRESENTATION_H
 #define CLASSFILE_CLASSFILEREPRESENTATION_H
 
-#include "ConstantPool.h"
-#include "Member.h"
+#include "ConstantPool.hpp"
+#include "Member.hpp"
 
 #include <vector>
 

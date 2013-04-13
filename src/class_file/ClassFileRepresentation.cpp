@@ -1,4 +1,4 @@
-#include "ClassFileRepresentation.h"
+#include "ClassFileRepresentation.hpp"
 
 namespace ClassFile{
 	

@@ -1,6 +1,6 @@
-#include "util.h"
-#include "class_file/ClassFileRepresentation.h"
-#include "class_file/parser/ClassFileParser.h"
+#include "util.hpp"
+#include "class_file/ClassFileRepresentation.hpp"
+#include "class_file/parser/ClassFileParser.hpp"
 
 #include <iostream>
 
