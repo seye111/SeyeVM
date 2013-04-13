@@ -191,6 +191,12 @@ namespace ClassFile{
 				SyntheticAttribute *attr = new SyntheticAttribute();
 				attributes.push_back(attr);
 
+			}else if(
+					name == "Signature"	
+				){
+				for(int i=0; i < attribute_length; i++){
+					buffer.get_byte();
+				}
 			}else {
 				throw JvmException("unknown attribute name " + name);
 			}
