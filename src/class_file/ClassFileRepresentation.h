@@ -3,7 +3,6 @@
 
 #include "ConstantPool.h"
 #include "Field.h"
-#include "parser/ClassFileDataBuffer.h"
 
 #include <vector>
 #include <map>
@@ -14,17 +13,14 @@ using std::map;
 
 namespace ClassFile{
 	
-
 	class ClassFileRepresentation{
-		friend ClassFileRepresentation* parse_from_buffer(ClassFileDataBuffer & buffer) throw(JvmException);
+		public:
 		int minor_version;
 		int major_version;
 		int constant_pool_count;
 		vector<ConstantPoolEntry> constant_pool;
 		map<string, Field> fields;
 	};
-
-	ClassFileRepresentation* parse_from_buffer(ClassFileDataBuffer & buffer) throw(JvmException);
 
 }
 
