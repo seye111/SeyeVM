@@ -1,5 +1,5 @@
-#ifndef CLASSFILEPARSER_H
-#define CLASSFILEPARSER_H
+#ifndef CLASSFILE_CLASSFILEPARSER_H
+#define CLASSFILE_CLASSFILEPARSER_H
 
 #include "../../util.h"
 #include "../ClassFileRepresentation.h"
