@@ -11,7 +11,7 @@ using std::vector;
 namespace ClassFile{
 
 	class Member{
-		public:
+	public:
 		int access_flags;
 		int name_index;
 		int descriptor_index;

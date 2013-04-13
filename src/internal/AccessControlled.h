@@ -17,7 +17,7 @@ namespace Internal{
 	const int ACC_STRICT  = 0x0800;
 
 	class AccessControlled{
-		public:
+	public:
 		int access_flags;
 		bool is_public() {return ((access_flags & ACC_PUBLIC) > 0);}
 		bool is_protected() {return ((access_flags & ACC_PRIVATE) > 0);}

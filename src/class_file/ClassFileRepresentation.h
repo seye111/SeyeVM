@@ -11,7 +11,7 @@ using std::vector;
 namespace ClassFile{
 	
 	class ClassFileRepresentation{
-		public:
+	public:
 		int minor_version;
 		int major_version;
 		vector<ConstantPoolEntry *> constant_pool;
@@ -27,7 +27,7 @@ namespace ClassFile{
 			for(int i=0; i<constant_pool.size(); i++){
 				delete constant_pool[i];
 			}
-			for(int i=0; i<attributes.size(); i++){
+ 			for(int i=0; i<attributes.size(); i++){
 				delete attributes[i];
 			}
 		}
