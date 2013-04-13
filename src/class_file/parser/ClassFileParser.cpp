@@ -98,7 +98,7 @@ namespace ClassFile{
 		}
 	}
 
-	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Attribute> attributes){
+	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Attribute*> attributes){
 		int attribute_count = buffer.get_u2();
 		for(int index = 0; index < attribute_count; index++){
 			int name_index = buffer.get_u2();

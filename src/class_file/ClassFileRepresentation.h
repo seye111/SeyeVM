@@ -21,11 +21,14 @@ namespace ClassFile{
 		vector<int> interfaces;
 		vector<Member> fields;
 		vector<Member> methods;
-		vector<Attribute> attributes;
+		vector<Attribute*> attributes;
 		
 		virtual ~ClassFileRepresentation(){
 			for(int i=0; i<constant_pool.size(); i++){
 				delete constant_pool[i];
+			}
+			for(int i=0; i<attributes.size(); i++){
+				delete attributes[i];
 			}
 		}
 
