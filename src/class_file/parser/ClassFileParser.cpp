@@ -30,64 +30,64 @@ namespace ClassFile{
 		}
 	}
 
-	void load_constant_pool(ClassFileDataBuffer & buffer, vector<ConstantPoolEntry> & constant_pool, int count) throw (JvmException){
+	void load_constant_pool(ClassFileDataBuffer & buffer, vector<ConstantPoolEntry*> & constant_pool) throw (JvmException){
+		
+		int count = buffer.get_u2();
+		cout << "constant pool count - " << count << endl;
+
 		for(int index = 1; index < count; index++){
 			int tag = buffer.get_u1();
 			cout << index << " - ";
-			int class_index;
-			int name_and_type_index;
-			int name_index;
-			int descriptor_index;
 			switch(tag){
 				case CONSTANT_UTF8:
-					constant_pool.push_back(ConstantUtf8(buffer.get_string()));
+					constant_pool.push_back(new ConstantUtf8(buffer.get_string()));
 					break; 
 				case CONSTANT_INTEGER: 
-					constant_pool.push_back(ConstantInteger(buffer.get_int()));
+					constant_pool.push_back(new ConstantInteger(buffer.get_int()));
 					break; 
 				case CONSTANT_FLOAT: 
-					constant_pool.push_back(ConstantFloat(buffer.get_float()));
+					constant_pool.push_back(new ConstantFloat(buffer.get_float()));
 					break; 
 				case CONSTANT_LONG: 
-					constant_pool.push_back(ConstantLong(buffer.get_long()));
+					constant_pool.push_back(new ConstantLong(buffer.get_long()));
 					// longs take up two slots in the constant pool;
-					constant_pool.push_back(ConstantPoolEntry());
+					constant_pool.push_back(new ConstantPoolEntry());
 					index++;
 					break; 
 				case CONSTANT_DOUBLE: 
-					constant_pool.push_back(ConstantDouble(buffer.get_double()));
+					constant_pool.push_back(new ConstantDouble(buffer.get_double()));
 					// doubles take up two slots in the constant pool;
-					constant_pool.push_back(ConstantPoolEntry());
+					constant_pool.push_back(new ConstantPoolEntry());
 					index++;
 					break; 
 				case CONSTANT_CLASS: 
-					constant_pool.push_back(ConstantClass(buffer.get_u2()));
+					constant_pool.push_back(new ConstantClass(buffer.get_u2()));
 					break; 
 				case CONSTANT_STRING: 
-					constant_pool.push_back(ConstantString(buffer.get_u2()));
+					constant_pool.push_back(new ConstantString(buffer.get_u2()));
 					break; 
 				case CONSTANT_FIELDREF: {
 						int class_index = buffer.get_u2();
 						int name_and_type_index = buffer.get_u2(); 
-						constant_pool.push_back(ConstantFieldref(class_index, name_and_type_index));
+						constant_pool.push_back(new ConstantFieldref(class_index, name_and_type_index));
 					}
 					break; 
 				case CONSTANT_METHODREF: {
 						int class_index = buffer.get_u2();
 						int name_and_type_index = buffer.get_u2(); 
-						constant_pool.push_back(ConstantMethodref(class_index, name_and_type_index));
+						constant_pool.push_back(new ConstantMethodref(class_index, name_and_type_index));
 					}
 					break; 
 				case CONSTANT_INTERFACEMETHODREF: {
 						int class_index = buffer.get_u2();
 						int name_and_type_index = buffer.get_u2();
-						constant_pool.push_back(ConstantInterfaceMethodref(class_index, name_and_type_index));
+						constant_pool.push_back(new ConstantInterfaceMethodref(class_index, name_and_type_index));
 					}
 					break; 
 				case CONSTANT_NAMEANDTYPE: {
 						int name_index = buffer.get_u2();
 						int descriptor_index = buffer.get_u2();
-						constant_pool.push_back(ConstantNameAndType(name_index, descriptor_index));
+						constant_pool.push_back(new ConstantNameAndType(name_index, descriptor_index));
 					}
 					break; 
 				default:
@@ -97,6 +97,35 @@ namespace ClassFile{
 			}
 		}
 	}
+
+	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Attribute> attributes){
+		int attribute_count = buffer.get_u2();
+		for(int index = 0; index < attribute_count; index++){
+			int name_index = buffer.get_u2();
+			int length = buffer.get_u4();
+			for(int i=0; i<length; i++){
+				buffer.get_byte();
+			}
+		}
+	}
+
+	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep){
+		int member_count = buffer.get_u2();
+		cout << "member_count " << member_count << endl;
+		for(int index = 0; index < member_count; index++){
+			cout << index << " - ";
+			Member member;
+			member.access_flags = buffer.get_u2();
+			member.name_index = buffer.get_u2();
+			member.descriptor_index = buffer.get_u2();
+			// todo - remove
+			string name = ((ConstantUtf8*)cfrep.constant_pool[member.name_index])->str;
+			string descriptor = ((ConstantUtf8*)cfrep.constant_pool[member.descriptor_index])->str;
+			cout << name << " : " << descriptor << endl;
+			parse_attributes(buffer, cfrep, member.attributes);
+		}
+	}
+
 
 	ClassFileRepresentation* parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
 		
@@ -112,15 +141,25 @@ namespace ClassFile{
 		cfrep->major_version = major;
 		cout << "major version - " << major << endl;
 
-		int c_pool_count = buffer.get_u2();
-		cout << "constant pool count - " << c_pool_count << endl;
-		cfrep->constant_pool_count = c_pool_count;
+		// zeroth entry in constant pool is empty
+		cfrep->constant_pool.push_back(new ConstantPoolEntry());
+		load_constant_pool(buffer, cfrep->constant_pool);
 
-		cfrep->constant_pool = vector<ConstantPoolEntry>(c_pool_count + 1);
-		cfrep->constant_pool.push_back(ConstantPoolEntry());
+		cfrep->access_flags = buffer.get_u2();
+		cout << "access flags " << cfrep->access_flags << endl;
+		cfrep->this_class = buffer.get_u2();
+		cout << "this_class " << cfrep->this_class << endl;
+		cfrep->super_class = buffer.get_u2();
+		cout << "super_class " << cfrep->super_class << endl;
+		int interface_count = buffer.get_u2();
+		cout << "interface_count " << interface_count << endl;
+		for(int i=0; i < interface_count; i++){
+			cfrep->interfaces.push_back(buffer.get_u2());
+		}
 
-		load_constant_pool(buffer, cfrep->constant_pool, c_pool_count);
-
+		parse_members(buffer, *cfrep);
+		parse_members(buffer, *cfrep);
+		parse_attributes(buffer, *cfrep, cfrep->attributes);
 		return cfrep;
 	}
 
