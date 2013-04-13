@@ -157,7 +157,9 @@ namespace ClassFile{
 			cfrep->interfaces.push_back(buffer.get_u2());
 		}
 
+		// fields
 		parse_members(buffer, *cfrep);
+		//methods
 		parse_members(buffer, *cfrep);
 		parse_attributes(buffer, *cfrep, cfrep->attributes);
 		return cfrep;
