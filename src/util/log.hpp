@@ -14,9 +14,9 @@ const int LOG_LEVEL_WARN = 3;
 const int LOG_LEVEL_ERROR = 4;
 const int LOG_LEVEL_FATAL = 5;
 
-int LOG_LEVEL = LOG_LEVEL_TRACE;
+extern int LOG_LEVEL;
 
-static ostream& os = cout;
+static ostream & os = cout;
 
 class Logger {
 
@@ -58,7 +58,9 @@ public:
 	bool is_error() {return LOG_LEVEL <= LOG_LEVEL_ERROR;}
 	bool is_fatal() {return LOG_LEVEL <= LOG_LEVEL_FATAL;}
 
-} logger;
+};
+
+extern Logger logger;
 
 
 #endif

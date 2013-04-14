@@ -33,24 +33,24 @@ namespace ClassFile{
 
 		int minor = buffer.get_u2();
 		cfrep.minor_version = minor;
-		cout << "minor version - " << minor << endl;
+		if(logger.is_trace()) logger.log_trace() << "minor version - " << minor << endl;
 	
 		int major = buffer.get_u2();
 		cfrep.major_version = major;
-		cout << "major version - " << major << endl;
+		if(logger.is_trace()) logger.log_trace() << "major version - " << major << endl;
 
 		// zeroth entry in constant pool is empty
 		cfrep.constant_pool.push_back(sp_ConstantPoolEntry(new ConstantPoolEntry()));
 		load_constant_pool(buffer, cfrep.constant_pool);
 
 		cfrep.access_flags = buffer.get_u2();
-		cout << "access flags " << cfrep.access_flags << endl;
+		if(logger.is_trace()) logger.log_trace() << "access flags " << cfrep.access_flags << endl;
 		cfrep.this_class = buffer.get_u2();
-		cout << "this_class " << cfrep.this_class << endl;
+		if(logger.is_trace()) logger.log_trace() << "this_class " << cfrep.this_class << endl;
 		cfrep.super_class = buffer.get_u2();
-		cout << "super_class " << cfrep.super_class << endl;
+		if(logger.is_trace()) logger.log_trace() << "super_class " << cfrep.super_class << endl;
 		int interface_count = buffer.get_u2();
-		cout << "interface_count " << interface_count << endl;
+		if(logger.is_trace()) logger.log_trace() << "interface_count " << interface_count << endl;
 		for(int i=0; i < interface_count; i++){
 			cfrep.interfaces.push_back(buffer.get_u2());
 		}
@@ -65,7 +65,7 @@ namespace ClassFile{
 
 	void check_magic(long magic) throw (JvmException){
 		if(magic == MAGIC){
-			cout << "magic number checked" << endl;
+			if(logger.is_trace()) logger.log_trace() << "magic number checked" << endl;
 		}else{
 			ostringstream os;
 			os << "magic number mismatch - expected " << std::hex << MAGIC << ", got " << magic;
@@ -76,11 +76,10 @@ namespace ClassFile{
 	void load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException){
 		
 		int count = buffer.get_u2();
-		cout << "constant pool count - " << count << endl;
+		if(logger.is_trace()) logger.log_trace() << "constant pool count - " << count << endl;
 
 		for(int index = 1; index < count; index++){
 			int tag = buffer.get_u1();
-			cout << index << " - ";
 			switch(tag){
 				case CONSTANT_UTF8:
 					constant_pool.push_back(sp_ConstantPoolEntry(
@@ -155,12 +154,11 @@ namespace ClassFile{
 
 	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
 		int attribute_count = buffer.get_u2();
-		cout << attribute_count << " attribute(s)" << endl;
+		if(logger.is_trace()) logger.log_trace() << attribute_count << " attribute(s)" << endl;
 		for(int index = 0; index < attribute_count; index++){
-			cout << index << " - ";
 			int name_index = buffer.get_u2();
 			string name = ((ConstantUtf8*)cfrep.constant_pool[name_index].get())->str;
-			cout << name << endl;
+			if(logger.is_trace()) logger.log_trace() << name << endl;
 			int attribute_length = buffer.get_u4();
 			if(name == "Code"){
 				CodeAttribute attr;
@@ -258,9 +256,9 @@ namespace ClassFile{
 
 	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Member> & members){
 		int member_count = buffer.get_u2();
-		cout << "member_count " << member_count << endl;
+		if(logger.is_trace()) logger.log_trace() << "member_count " << member_count << endl;
 		for(int index = 0; index < member_count; index++){
-			cout << index << " - ";
+			if(logger.is_trace()) logger.log_trace() << index << " - ";
 			Member member;
 			member.access_flags = buffer.get_u2();
 			member.name_index = buffer.get_u2();
@@ -268,7 +266,7 @@ namespace ClassFile{
 			// todo - remove
 			string name = ((ConstantUtf8*)cfrep.constant_pool[member.name_index].get())->str;
 			string descriptor = ((ConstantUtf8*)cfrep.constant_pool[member.descriptor_index].get())->str;
-			cout << name << " : " << descriptor << endl;
+			if(logger.is_trace()) logger.log_trace() << name << " : " << descriptor << endl;
 			parse_attributes(buffer, cfrep, member.attributes);
 			members.push_back(member);
 		}

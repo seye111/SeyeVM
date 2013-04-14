@@ -1,4 +1,5 @@
 #include "ClassFileDataBuffer.hpp"
+#include "../../util/log.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -91,14 +92,14 @@ namespace ClassFile{
 	}
 
 	shared_ptr<ClassFileDataBuffer> ClassFileDataBuffer::get_from_file(string & filename) throw(JvmException) {
-		cout << "loading class file raw data " << filename << endl;
+		if(logger.is_trace()) logger.log_trace() << "loading class file raw data " << filename << endl;
 		int size = 0;
 		char* data;
 		ifstream file (filename.c_str(), ios::in|ios::binary|ios::ate);
 		if(file.is_open()){
 			size = file.tellg();
 			data = new char[size];
-			cout << "size: " << size << endl;
+			if(logger.is_trace()) logger.log_trace() << "size: " << size << endl;
 			file.seekg (0, ios::beg);
 			file.read (data, size);
 			if (!file){

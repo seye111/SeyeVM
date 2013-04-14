@@ -1,12 +1,15 @@
 #ifndef CONSTANTPOOL_H
 #define CONSTANTPOOL_H
 
+#include "../util/log.hpp"
+
+
 #include <iostream>
 #include <string>
 #include <boost/shared_ptr.hpp>
 
+
 using std::string;
-using std::cout;
 using std::endl;
 using boost::shared_ptr;
 
@@ -35,7 +38,8 @@ namespace ClassFile{
 	public:
 		string str;
 		ConstantUtf8(const string & str) : str(str) {
-			cout << "CONSTANT_Utf8 initialized with \"" << str << "\"  " << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Utf8 initialized with \"" << str << "\"  " << endl;
 		}
 		virtual int get_tag(){return CONSTANT_UTF8;}
 	};
@@ -44,7 +48,8 @@ namespace ClassFile{
 	public:
 		int val;
 		ConstantInteger(int val) : val(val) {
-			cout << "CONSTANT_Integer initialized with " << val << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Integer initialized with " << val << endl;
 		}
 		virtual int get_tag(){return CONSTANT_INTEGER;}
 	};
@@ -53,7 +58,8 @@ namespace ClassFile{
 	public:
 		float val;
 		ConstantFloat(float val) : val(val) {
-			cout << "CONSTANT_Float initialized with " << val << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Float initialized with " << val << endl;
 		}
 		virtual int get_tag(){return CONSTANT_FLOAT;}
 	};
@@ -62,7 +68,8 @@ namespace ClassFile{
 	public:
 		long val;
 		ConstantLong(long val) : val(val) {
-			cout << "CONSTANT_Long initialized with " << val << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Long initialized with " << val << endl;
 		}
 		virtual int get_tag(){return CONSTANT_LONG;}
 	};
@@ -71,7 +78,8 @@ namespace ClassFile{
 	public:
 		double val;
 		ConstantDouble(double val) : val(val) {
-			cout << "CONSTANT_Double initialized with " << val << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Double initialized with " << val << endl;
 		}
 		virtual int get_tag(){return CONSTANT_DOUBLE;}
 	};
@@ -80,7 +88,8 @@ namespace ClassFile{
 	public:
 		int name_index;
 		ConstantClass(int name_index) : name_index(name_index) {
-			cout << "CONSTANT_Class initialized with " <<  name_index << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Class initialized with " <<  name_index << endl;
 		}
 		virtual int get_tag(){return CONSTANT_CLASS;}
 	};
@@ -89,7 +98,8 @@ namespace ClassFile{
 	public:
 		int string_index;
 		ConstantString(int string_index) : string_index(string_index) {
-			cout << "CONSTANT_String initialized with " <<  string_index << endl;
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_String initialized with " <<  string_index << endl;
 		}
 		virtual int get_tag(){return CONSTANT_STRING;}
 	};
@@ -100,7 +110,8 @@ namespace ClassFile{
 		int name_and_type_index;
 		ConstantFieldref(int class_index, int name_and_type_index)
 			: class_index(class_index), name_and_type_index(name_and_type_index) {
-			cout << "CONSTANT_Fieldref initialized with " <<  class_index << ", " 
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Fieldref initialized with " <<  class_index << ", " 
 				<< name_and_type_index << endl;
 		}
 		virtual int get_tag(){return CONSTANT_FIELDREF;}
@@ -112,7 +123,8 @@ namespace ClassFile{
 		int name_and_type_index;
 		ConstantMethodref(int class_index, int name_and_type_index)
 			: class_index(class_index), name_and_type_index(name_and_type_index) {
-			cout << "CONSTANT_Methodref initialized with " <<  class_index << ", " 
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_Methodref initialized with " <<  class_index << ", " 
 				<< name_and_type_index << endl;
 		}
 		virtual int get_tag(){return CONSTANT_METHODREF;}
@@ -124,7 +136,8 @@ namespace ClassFile{
 		int name_and_type_index;
 		ConstantInterfaceMethodref(int class_index, int name_and_type_index)
 			: class_index(class_index), name_and_type_index(name_and_type_index) {
-			cout << "CONSTANT_InterfaceMethodref initialized with " <<  class_index << ", " 
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_InterfaceMethodref initialized with " <<  class_index << ", " 
 				<< name_and_type_index << endl;
 		}
 		virtual int get_tag(){return CONSTANT_INTERFACEMETHODREF;}
@@ -136,7 +149,8 @@ namespace ClassFile{
 		int descriptor_index;
 		ConstantNameAndType(int name_index, int descriptor_index)
 			: name_index(name_index), descriptor_index(descriptor_index) {
-			cout << "CONSTANT_NameAndType initialized with " <<  name_index << ", " 
+			if(logger.is_trace()) logger.log_trace()
+				<< "CONSTANT_NameAndType initialized with " <<  name_index << ", " 
 				<< descriptor_index << endl;
 		}
 		virtual int get_tag(){return CONSTANT_NAMEANDTYPE;}
