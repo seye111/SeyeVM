@@ -1,7 +1,7 @@
 #ifndef CLASSFILE_CLASSFILEPARSER_H
 #define CLASSFILE_CLASSFILEPARSER_H
 
-#include "../../util.hpp"
+#include "../../util/util.hpp"
 #include "../ClassFileRepresentation.hpp"
 #include "ClassFileDataBuffer.hpp"
 

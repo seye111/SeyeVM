@@ -23,6 +23,7 @@ namespace ClassFile{
 		vector<Member> fields;
 		vector<Member> methods;
 		vector<sp_Attribute> attributes;
+	
 	};
 }
 

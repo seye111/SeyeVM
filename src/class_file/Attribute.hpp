@@ -26,7 +26,6 @@ namespace ClassFile{
 	class Attribute{
 	public:
 		virtual int get_tag(){return 0;}
-		virtual ~Attribute(){}
 	};
 
 	typedef shared_ptr<Attribute> sp_Attribute;

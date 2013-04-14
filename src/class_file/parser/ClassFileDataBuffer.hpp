@@ -1,7 +1,7 @@
 #ifndef CLASSFILE_CLASSFILEDATABUFFER_H
 #define CLASSFILE_CLASSFILEDATABUFFER_H
 
-#include "../../util.hpp"
+#include "../../util/util.hpp"
 
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -11,14 +11,12 @@ using std::string;
 
 namespace ClassFile{
     
-	typedef shared_ptr<char> sp_char;
-
 	class ClassFileDataBuffer {
-		sp_char data;
+		char* data;
 		int size;
 		int pos;
 		long get_n(int n);
-		ClassFileDataBuffer (sp_char data, int size);
+		ClassFileDataBuffer (char* data, int size);
 
 	public:
 		long get_u4();
@@ -30,6 +28,7 @@ namespace ClassFile{
 		float get_float();
 		double get_double();
 		string get_string();
+		~ClassFileDataBuffer ();
 
 		static shared_ptr<ClassFileDataBuffer> get_from_file(string & filename) throw (JvmException);
 	};

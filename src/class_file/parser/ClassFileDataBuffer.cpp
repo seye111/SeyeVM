@@ -11,10 +11,14 @@ using std::ios;
 
 namespace ClassFile{
 
-	ClassFileDataBuffer::ClassFileDataBuffer(sp_char data, int size) : 
+	ClassFileDataBuffer::ClassFileDataBuffer(char* data, int size) : 
 		data(data),
 		size(size),
 		pos(0){}
+
+	ClassFileDataBuffer::~ClassFileDataBuffer() {
+		delete(data);
+	}
 
 	long ClassFileDataBuffer::get_n(int n) {
 		long result = 0;
@@ -71,31 +75,32 @@ namespace ClassFile{
 		if (pos >= size){
 			throw JvmException("attempt to read beyond buffer");
 		}
-		return data.get()[pos++];
+		return data[pos++];
 	}
 
 	string ClassFileDataBuffer::get_string(){
 		int length = get_u2();
 		
-		sp_char chars = sp_char(new char[length]); 
+		char* chars = new char[length]; 
 		for(int i=0; i<length; i++)
-			chars.get()[i] = get_byte();
-		chars.get()[length] = NULL;
-		string result = string(chars.get());
+			chars[i] = get_byte();
+		chars[length] = NULL;
+		string result = string(chars);
+		delete chars;
 		return result;
 	}
 
 	shared_ptr<ClassFileDataBuffer> ClassFileDataBuffer::get_from_file(string & filename) throw(JvmException) {
 		cout << "loading class file raw data " << filename << endl;
 		int size = 0;
-		sp_char data;
+		char* data;
 		ifstream file (filename.c_str(), ios::in|ios::binary|ios::ate);
 		if(file.is_open()){
 			size = file.tellg();
-			data = sp_char(new char[size]);
+			data = new char[size];
 			cout << "size: " << size << endl;
 			file.seekg (0, ios::beg);
-			file.read (data.get(), size);
+			file.read (data, size);
 			if (!file){
 				throw JvmException ("could not load file " + filename); 
 			}

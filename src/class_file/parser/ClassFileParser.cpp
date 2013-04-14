@@ -21,8 +21,8 @@ namespace ClassFile{
 
 	void check_magic(long magic) throw (JvmException);
 	void load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException);
-	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> attributes);
-	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep);
+	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes);
+	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Member> & members);
 
 	shared_ptr<ClassFileRepresentation> parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
 		
@@ -56,9 +56,9 @@ namespace ClassFile{
 		}
 
 		// fields
-		parse_members(buffer, cfrep);
+		parse_members(buffer, cfrep, cfrep.fields);
 		//methods
-		parse_members(buffer, cfrep);
+		parse_members(buffer, cfrep, cfrep.methods);
 		parse_attributes(buffer, cfrep, cfrep.attributes);
 		return cfrep_sptr;
 	}
@@ -153,7 +153,7 @@ namespace ClassFile{
 		}
 	}
 
-	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> attributes){
+	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
 		int attribute_count = buffer.get_u2();
 		cout << attribute_count << " attribute(s)" << endl;
 		for(int index = 0; index < attribute_count; index++){
@@ -256,7 +256,7 @@ namespace ClassFile{
 		}
 	}
 
-	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep){
+	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Member> & members){
 		int member_count = buffer.get_u2();
 		cout << "member_count " << member_count << endl;
 		for(int index = 0; index < member_count; index++){
@@ -270,6 +270,7 @@ namespace ClassFile{
 			string descriptor = ((ConstantUtf8*)cfrep.constant_pool[member.descriptor_index].get())->str;
 			cout << name << " : " << descriptor << endl;
 			parse_attributes(buffer, cfrep, member.attributes);
+			members.push_back(member);
 		}
 	}
 
