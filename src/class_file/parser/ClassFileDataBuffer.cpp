@@ -82,7 +82,7 @@ namespace ClassFile{
 	string ClassFileDataBuffer::get_string(){
 		int length = get_u2();
 		
-		char* chars = new char[length]; 
+		char* chars = new char[length + 1]; 
 		for(int i=0; i<length; i++)
 			chars[i] = get_byte();
 		chars[length] = NULL;
