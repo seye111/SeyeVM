@@ -10,13 +10,15 @@ using boost::shared_ptr;
 using std::string;
 
 namespace ClassFile{
+    
+	typedef shared_ptr<char> sp_char;
 
 	class ClassFileDataBuffer {
-		shared_ptr<char> data;
+		sp_char data;
 		int size;
 		int pos;
 		long get_n(int n);
-		ClassFileDataBuffer (shared_ptr<char> data, int size);
+		ClassFileDataBuffer (sp_char data, int size);
 
 	public:
 		long get_u4();

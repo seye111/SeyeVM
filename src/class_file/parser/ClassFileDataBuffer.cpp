@@ -11,7 +11,7 @@ using std::ios;
 
 namespace ClassFile{
 
-	ClassFileDataBuffer::ClassFileDataBuffer (shared_ptr<char> data, int size) : 
+	ClassFileDataBuffer::ClassFileDataBuffer(sp_char data, int size) : 
 		data(data),
 		size(size),
 		pos(0){}
@@ -88,11 +88,11 @@ namespace ClassFile{
 	shared_ptr<ClassFileDataBuffer> ClassFileDataBuffer::get_from_file(string & filename) throw(JvmException) {
 		cout << "loading class file raw data " << filename << endl;
 		int size = 0;
-		shared_ptr<char> data;
+		sp_char data;
 		ifstream file (filename.c_str(), ios::in|ios::binary|ios::ate);
 		if(file.is_open()){
 			size = file.tellg();
-			data = shared_ptr<char> (new char[size]);
+			data = sp_char(new char[size]);
 			cout << "size: " << size << endl;
 			file.seekg (0, ios::beg);
 			file.read (data.get(), size);
