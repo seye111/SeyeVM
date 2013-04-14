@@ -3,16 +3,17 @@
 #include "class_file/parser/ClassFileParser.hpp"
 
 #include <iostream>
+#include <boost/shared_ptr.hpp>
 
 using std::string;
 using std::cout;
 using std::endl;
+using boost::shared_ptr;
 
 int main(int argc, char** argv) throw (JvmException){
 	try{
 		string filename(argv[1]);
-		ClassFile::ClassFileRepresentation* cfrep =  ClassFile::parse_from_file(filename);
-		delete cfrep;
+		shared_ptr<ClassFile::ClassFileRepresentation> cfrep =  ClassFile::parse_from_file(filename);
 		return 0;
 	}catch (JvmException & ex){
 		cout << "Exception: " << ex.what() << endl;

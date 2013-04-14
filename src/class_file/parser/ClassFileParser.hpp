@@ -6,16 +6,18 @@
 #include "ClassFileDataBuffer.hpp"
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 using std::string;
+using boost::shared_ptr;
 
 namespace ClassFile{
 	
 	const long MAGIC = 0xCAFEBABE;
 
-	ClassFileRepresentation *parse_from_file (string & filename) throw (JvmException);
+	shared_ptr<ClassFileRepresentation> parse_from_file (string & filename) throw (JvmException);
 
-	ClassFileRepresentation *parse_from_buffer (ClassFileDataBuffer & buffer) throw (JvmException);
+	shared_ptr<ClassFileRepresentation> parse_from_buffer (ClassFileDataBuffer & buffer) throw (JvmException);
 
 }
 

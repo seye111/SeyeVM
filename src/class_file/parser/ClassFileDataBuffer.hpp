@@ -4,17 +4,19 @@
 #include "../../util.hpp"
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
+using boost::shared_ptr;
 using std::string;
 
 namespace ClassFile{
 
 	class ClassFileDataBuffer {
-		char* data;
+		shared_ptr<char> data;
 		int size;
 		int pos;
 		long get_n(int n);
-		ClassFileDataBuffer (char* buffer, int size);
+		ClassFileDataBuffer (shared_ptr<char> data, int size);
 
 	public:
 		long get_u4();
@@ -26,9 +28,8 @@ namespace ClassFile{
 		float get_float();
 		double get_double();
 		string get_string();
-		virtual ~ClassFileDataBuffer();
 
-		static ClassFileDataBuffer* get_from_file(string & filename) throw (JvmException);
+		static shared_ptr<ClassFileDataBuffer> get_from_file(string & filename) throw (JvmException);
 	};
 
 }

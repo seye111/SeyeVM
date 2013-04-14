@@ -1,3 +1,4 @@
+
 #ifndef CLASSFILE_CLASSFILEREPRESENTATION_H
 #define CLASSFILE_CLASSFILEREPRESENTATION_H
 
@@ -14,7 +15,7 @@ namespace ClassFile{
 	public:
 		int minor_version;
 		int major_version;
-		vector<ConstantPoolEntry *> constant_pool;
+		vector<ConstantPoolEntry*> constant_pool;
 		int access_flags;
 		int this_class;
 		int super_class;

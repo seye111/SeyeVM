@@ -11,7 +11,7 @@ using std::ios;
 
 namespace ClassFile{
 
-	ClassFileDataBuffer::ClassFileDataBuffer (char* data, int size) : 
+	ClassFileDataBuffer::ClassFileDataBuffer (shared_ptr<char> data, int size) : 
 		data(data),
 		size(size),
 		pos(0){}
@@ -71,7 +71,7 @@ namespace ClassFile{
 		if (pos >= size){
 			throw JvmException("attempt to read beyond buffer");
 		}
-		return (data[pos++]);
+		return data.get()[pos++];
 	}
 
 	string ClassFileDataBuffer::get_string(){
@@ -85,19 +85,17 @@ namespace ClassFile{
 		return result;
 	}
 
-	ClassFileDataBuffer::~ClassFileDataBuffer(){delete data;}
-
-	ClassFileDataBuffer* ClassFileDataBuffer::get_from_file(string & filename) throw(JvmException) {
+	shared_ptr<ClassFileDataBuffer> ClassFileDataBuffer::get_from_file(string & filename) throw(JvmException) {
 		cout << "loading class file raw data " << filename << endl;
 		int size = 0;
-		char* data = NULL;
+		shared_ptr<char> data;
 		ifstream file (filename.c_str(), ios::in|ios::binary|ios::ate);
 		if(file.is_open()){
 			size = file.tellg();
-			data = new char[size];
+			data = shared_ptr<char> (new char[size]);
 			cout << "size: " << size << endl;
 			file.seekg (0, ios::beg);
-			file.read (data, size);
+			file.read (data.get(), size);
 			if (!file){
 				throw JvmException ("could not load file " + filename); 
 			}
@@ -106,6 +104,6 @@ namespace ClassFile{
 			throw JvmException ("could not load file " + filename);
 		}
 
-		return new ClassFileDataBuffer (data, size);
+		return shared_ptr<ClassFileDataBuffer> (new ClassFileDataBuffer (data, size));
 	}
 }

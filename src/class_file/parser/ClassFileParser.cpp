@@ -13,10 +13,9 @@ using std::vector;
 
 namespace ClassFile{
 
-	ClassFileRepresentation* parse_from_file(string & filename) throw (JvmException){
-		ClassFileDataBuffer* buffer = ClassFileDataBuffer::get_from_file(filename);
-		ClassFileRepresentation* result = parse_from_buffer(*buffer);
-		delete buffer;
+	shared_ptr<ClassFileRepresentation> parse_from_file(string & filename) throw (JvmException){
+		shared_ptr<ClassFileDataBuffer> buffer = ClassFileDataBuffer::get_from_file(filename);
+		shared_ptr<ClassFileRepresentation> result = parse_from_buffer(*buffer);
 		return result;
 	}
 
@@ -25,42 +24,43 @@ namespace ClassFile{
 	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Attribute*> attributes);
 	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep);
 
-	ClassFileRepresentation* parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
+	shared_ptr<ClassFileRepresentation> parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
 		
 		check_magic(buffer.get_u4()); 
 
-		ClassFileRepresentation* cfrep = new ClassFileRepresentation();
-	
+		shared_ptr<ClassFileRepresentation> cfrep_sptr = shared_ptr<ClassFileRepresentation>(new ClassFileRepresentation);
+		ClassFileRepresentation & cfrep = *cfrep_sptr;
+
 		int minor = buffer.get_u2();
-		cfrep->minor_version = minor;
+		cfrep.minor_version = minor;
 		cout << "minor version - " << minor << endl;
 	
 		int major = buffer.get_u2();
-		cfrep->major_version = major;
+		cfrep.major_version = major;
 		cout << "major version - " << major << endl;
 
 		// zeroth entry in constant pool is empty
-		cfrep->constant_pool.push_back(new ConstantPoolEntry());
-		load_constant_pool(buffer, cfrep->constant_pool);
+		cfrep.constant_pool.push_back(new ConstantPoolEntry());
+		load_constant_pool(buffer, cfrep.constant_pool);
 
-		cfrep->access_flags = buffer.get_u2();
-		cout << "access flags " << cfrep->access_flags << endl;
-		cfrep->this_class = buffer.get_u2();
-		cout << "this_class " << cfrep->this_class << endl;
-		cfrep->super_class = buffer.get_u2();
-		cout << "super_class " << cfrep->super_class << endl;
+		cfrep.access_flags = buffer.get_u2();
+		cout << "access flags " << cfrep.access_flags << endl;
+		cfrep.this_class = buffer.get_u2();
+		cout << "this_class " << cfrep.this_class << endl;
+		cfrep.super_class = buffer.get_u2();
+		cout << "super_class " << cfrep.super_class << endl;
 		int interface_count = buffer.get_u2();
 		cout << "interface_count " << interface_count << endl;
 		for(int i=0; i < interface_count; i++){
-			cfrep->interfaces.push_back(buffer.get_u2());
+			cfrep.interfaces.push_back(buffer.get_u2());
 		}
 
 		// fields
-		parse_members(buffer, *cfrep);
+		parse_members(buffer, cfrep);
 		//methods
-		parse_members(buffer, *cfrep);
-		parse_attributes(buffer, *cfrep, cfrep->attributes);
-		return cfrep;
+		parse_members(buffer, cfrep);
+		parse_attributes(buffer, cfrep, cfrep.attributes);
+		return cfrep_sptr;
 	}
 
 	void check_magic(long magic) throw (JvmException){
