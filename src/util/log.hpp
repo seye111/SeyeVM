@@ -48,7 +48,6 @@ public:
 
 	ostream & log_error(){
 		return os << "ERROR - ";
-	
 	}
 
 	bool is_trace() {return LOG_LEVEL <= LOG_LEVEL_TRACE;}
