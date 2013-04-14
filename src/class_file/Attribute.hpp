@@ -3,11 +3,13 @@
 
 #include <iostream>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 using std::cout;
 using std::endl;
 using std::vector;
 using std::string;
+using boost::shared_ptr;
 
 namespace ClassFile{
 
@@ -27,6 +29,8 @@ namespace ClassFile{
 		virtual ~Attribute(){}
 	};
 
+	typedef shared_ptr<Attribute> sp_Attribute;
+
 	struct ExceptionInfo{
 		int start_pc;
 		int end_pc;
@@ -34,22 +38,17 @@ namespace ClassFile{
 		int catch_type;
 	};
 
+	typedef shared_ptr<char> sp_char;
+
 	class CodeAttribute : public Attribute{
 	public:
 		int max_stack;
 		int max_locals;
 		int code_length;
-		char* code;
+		sp_char code;
 		vector<ExceptionInfo> exception_table;
-		vector<Attribute*> attributes;
+		vector<sp_Attribute> attributes;
 		
-		virtual ~CodeAttribute(){
-			for(int i=0; i<attributes.size(); i++){
-				delete attributes[i];
-			}
-			delete code;
-		}
-
 		virtual int get_tag(){
 			return ATTRIBUTE_CODE;
 		}

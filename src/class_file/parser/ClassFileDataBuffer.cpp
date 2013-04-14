@@ -76,12 +76,12 @@ namespace ClassFile{
 
 	string ClassFileDataBuffer::get_string(){
 		int length = get_u2();
-		char* chars = new char[length];
+		
+		sp_char chars = sp_char(new char[length]); 
 		for(int i=0; i<length; i++)
-			chars[i] = get_byte();
-		chars[length] = NULL;
-		string result = string(chars);
-		delete chars;
+			chars.get()[i] = get_byte();
+		chars.get()[length] = NULL;
+		string result = string(chars.get());
 		return result;
 	}
 

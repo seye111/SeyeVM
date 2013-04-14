@@ -3,10 +3,12 @@
 
 #include <iostream>
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 using std::string;
 using std::cout;
 using std::endl;
+using boost::shared_ptr;
 
 namespace ClassFile{
 
@@ -26,6 +28,8 @@ namespace ClassFile{
 	public:
 		virtual int get_tag(){return 0;}
 	};
+
+	typedef shared_ptr<ConstantPoolEntry> sp_ConstantPoolEntry;
 
 	class ConstantUtf8 : public ConstantPoolEntry{
 	public:
