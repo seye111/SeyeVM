@@ -27,6 +27,24 @@ namespace ClassFile{
 	const int CONSTANT_INTERFACEMETHODREF = 11;
 	const int CONSTANT_NAMEANDTYPE = 12;
 
+	const int CONSTANT_MAX_TAG = 12;
+
+	static string tag_names[] = {
+		"UNUSED",
+		"CONSTANT_UTF8",
+		"UNUSED",
+		"CONSTANT_INTEGER",
+		"CONSTANT_FLOAT",
+		"CONSTANT_LONG",
+		"CONSTANT_DOUBLE",
+		"CONSTANT_CLASS",
+		"CONSTANT_STRING",
+		"CONSTANT_FIELDREF",
+		"CONSTANT_METHODREF",
+		"CONSTANT_INTERFACEMETHODREF",
+		"CONSTANT_NAMEANDTYPE"
+	};
+
 	////////////////////////////////////////////////////////////////////////////////
 	//
 	// base class ClassFile::ConstantPoolEntry and a set of subclasses thereof

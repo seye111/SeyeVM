@@ -17,6 +17,7 @@ using boost::shared_ptr;
 using ClassFile::ClassFileDataBuffer;
 using ClassFile::sp_ClassFileRepresentation;
 using Internal::sp_JvmClass;
+using Internal::expander;
 
 int main(int argc, char** argv) throw (JvmException){
 	LOG_LEVEL = LOG_LEVEL_DEBUG;
@@ -25,8 +26,8 @@ int main(int argc, char** argv) throw (JvmException){
 		string filename(argv[1]);
 		byte_buffer buffer = bytes_from_file(filename);
 		ClassFileDataBuffer cfdb(buffer.data, buffer.size);
-		sp_ClassFileRepresentation cfr = ClassFile::parse_from_buffer(cfdb);
-		sp_JvmClass jvm_class = Internal::expand_class_representation(*cfr);
+		sp_ClassFileRepresentation sp_cfr = ClassFile::parse_from_buffer(cfdb);
+		sp_JvmClass jvm_class = expander(sp_cfr).expand_class_representation();
 		return 0;
 	}catch (JvmException & ex){
 		cout << "exception: " << ex.what() << endl;

@@ -13,6 +13,7 @@ namespace Internal{
 	class JvmClass{
 	public:
 		string name;
+		string super_class_name;
 	};
 
 	typedef shared_ptr<JvmClass> sp_JvmClass;
