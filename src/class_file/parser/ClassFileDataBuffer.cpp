@@ -18,7 +18,7 @@ namespace ClassFile{
 		pos(0){}
 
 	ClassFileDataBuffer::~ClassFileDataBuffer() {
-		delete(data);
+		delete[] data;
 	}
 
 	long ClassFileDataBuffer::get_n(int n) {
@@ -87,7 +87,7 @@ namespace ClassFile{
 			chars[i] = get_byte();
 		chars[length] = NULL;
 		string result = string(chars);
-		delete chars;
+		delete[] chars;
 		return result;
 	}
 

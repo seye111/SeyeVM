@@ -1,4 +1,3 @@
-
 #ifndef CLASSFILE_CLASSFILEREPRESENTATION_H
 #define CLASSFILE_CLASSFILEREPRESENTATION_H
 
@@ -6,6 +5,7 @@
 #include "Member.hpp"
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 using std::vector;
 
@@ -37,6 +37,8 @@ namespace ClassFile{
 		vector<Member> methods;
 		vector<sp_Attribute> attributes;
 	};
+
+	typedef shared_ptr<ClassFileRepresentation> sp_ClassFileRepresentation;
 
 }
 

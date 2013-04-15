@@ -1,7 +1,10 @@
-#include "util/util.hpp"
-#include "util/log.hpp"
 #include "class_file/ClassFileRepresentation.hpp"
 #include "class_file/parser/ClassFileParser.hpp"
+
+#include "internal/class/expander.hpp"
+
+#include "util/util.hpp"
+#include "util/log.hpp"
 
 #include <iostream>
 #include <boost/shared_ptr.hpp>
@@ -11,19 +14,22 @@ using std::string;
 using std::cout;
 using std::endl;
 using boost::shared_ptr;
+using ClassFile::ClassFileDataBuffer;
+using ClassFile::sp_ClassFileRepresentation;
+using Internal::sp_JvmClass;
 
 int main(int argc, char** argv) throw (JvmException){
-	LOG_LEVEL = LOG_LEVEL_TRACE;
+	LOG_LEVEL = LOG_LEVEL_DEBUG;
 	try{
-		if(logger.is_info()) logger.log_info() << "Starting JVM..." << endl;
+		if(logger.is_info()) logger.log_info() << "starting JVM..." << endl;
 		string filename(argv[1]);
-		char* raw_data;
-		int size = bytes_from_file(filename, &raw_data);
-		ClassFile::ClassFileDataBuffer cfdb(raw_data, size);
-		ClassFile::ClassFileRepresentation cfrep =  *ClassFile::parse_from_buffer(cfdb);
+		byte_buffer buffer = bytes_from_file(filename);
+		ClassFileDataBuffer cfdb(buffer.data, buffer.size);
+		sp_ClassFileRepresentation cfr = ClassFile::parse_from_buffer(cfdb);
+		sp_JvmClass jvm_class = Internal::expand_class_representation(*cfr);
 		return 0;
 	}catch (JvmException & ex){
-		cout << "Exception: " << ex.what() << endl;
+		cout << "exception: " << ex.what() << endl;
 		return -1;
 	}
 }

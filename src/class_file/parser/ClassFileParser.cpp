@@ -19,7 +19,7 @@ namespace ClassFile{
 	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Member> & members);
 
 	shared_ptr<ClassFileRepresentation> parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
-		
+		if(logger.is_debug()) logger.log_debug() << "parsing class file data..." << endl;
 		check_magic(buffer.get_u4()); 
 
 		shared_ptr<ClassFileRepresentation> cfrep_sptr = shared_ptr<ClassFileRepresentation>(new ClassFileRepresentation);
@@ -54,6 +54,8 @@ namespace ClassFile{
 		//methods
 		parse_members(buffer, cfrep, cfrep.methods);
 		parse_attributes(buffer, cfrep, cfrep.attributes);
+		
+		if(logger.is_debug()) logger.log_debug() << "...parsed class file data." << endl;
 		return cfrep_sptr;
 	}
 

@@ -29,7 +29,13 @@ public:
 	JvmException(string what_text) : SimpleException(what_text) {}
 };
 
-int bytes_from_file(string & filename, char** pp_char);
+struct byte_buffer{
+	int size;
+	char* data;
+	byte_buffer(int size) : size(size), data(new char[size]) {}
+};
+
+byte_buffer bytes_from_file(string & filename);
 
 
 #endif

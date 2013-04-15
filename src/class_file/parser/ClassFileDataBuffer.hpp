@@ -47,6 +47,8 @@ namespace ClassFile{
 
 	};
 
+	typedef shared_ptr<ClassFileDataBuffer> sp_ClassFileDataBuffer;
+
 }
 
 #endif
