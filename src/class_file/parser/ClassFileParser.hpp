@@ -15,7 +15,12 @@ namespace ClassFile{
 	
 	const long MAGIC = 0xCAFEBABE;
 
-	shared_ptr<ClassFileRepresentation> parse_from_file (string & filename) throw (JvmException);
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// ClassFile::parse_from_buffer produces a ClassFile::ClassFileRepresentation
+	// from a ClassFile::ClassFileDataBuffer
+	//
+	////////////////////////////////////////////////////////////////////////////////
 
 	shared_ptr<ClassFileRepresentation> parse_from_buffer (ClassFileDataBuffer & buffer) throw (JvmException);
 

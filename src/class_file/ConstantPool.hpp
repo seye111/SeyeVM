@@ -1,5 +1,5 @@
-#ifndef CONSTANTPOOL_H
-#define CONSTANTPOOL_H
+#ifndef CLASSFILECONSTANTPOOL_H
+#define CLASSFILECONSTANTPOOL_H
 
 #include "../util/log.hpp"
 
@@ -26,6 +26,14 @@ namespace ClassFile{
 	const int CONSTANT_METHODREF = 10;
 	const int CONSTANT_INTERFACEMETHODREF = 11;
 	const int CONSTANT_NAMEANDTYPE = 12;
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// base class ClassFile::ConstantPoolEntry and a set of subclasses thereof
+	//
+	// each instance represents one entry in the constant pool of a java class file
+	//
+	////////////////////////////////////////////////////////////////////////////////
 
 	class ConstantPoolEntry{
 	public:

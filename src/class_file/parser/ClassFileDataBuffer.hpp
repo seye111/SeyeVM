@@ -10,15 +10,30 @@ using boost::shared_ptr;
 using std::string;
 
 namespace ClassFile{
-    
-	class ClassFileDataBuffer {
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// class ClassFile::ClassFileDataBuffer
+	//
+	// provides methods to sequentially extract data types relevant to the parsing 
+	// of the raw binary data of a java class file.
+	//
+	// works from an internal char array and is able to detect attempted buffer
+	// overruns. 
+	//
+	// intended to be used by a ClassFileParser while it constructs an instance of
+	// ClassFile::ClassFileRepresentation.
+	//
+	////////////////////////////////////////////////////////////////////////////////
+
+   	class ClassFileDataBuffer {
 		char* data;
 		int size;
 		int pos;
 		long get_n(int n);
-		ClassFileDataBuffer (char* data, int size);
 
 	public:
+		ClassFileDataBuffer (char* data, int size);
 		long get_u4();
 		int get_u2();
 		int get_u1();
@@ -30,7 +45,6 @@ namespace ClassFile{
 		string get_string();
 		~ClassFileDataBuffer ();
 
-		static shared_ptr<ClassFileDataBuffer> get_from_file(string & filename) throw (JvmException);
 	};
 
 }

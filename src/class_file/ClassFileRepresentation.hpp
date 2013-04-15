@@ -10,9 +10,22 @@
 using std::vector;
 
 namespace ClassFile{
-	
-	class ClassFileRepresentation{
-	public:
+
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// struct ClassFile::ClassFileRepresentation
+	// 
+	// describes the intermediate representation of the contents of a 
+	// java class file. it closely resembles the format of the class file itself
+	// and none of the references or code in it are expanded.
+	//
+	// it is intended to be parsed from the raw class file data and then handed on 
+	// to be converted to a richer, expanded representation for linking and 
+	// execution.  
+	//
+	////////////////////////////////////////////////////////////////////////////////
+
+	struct ClassFileRepresentation{
 		int minor_version;
 		int major_version;
 		vector<sp_ConstantPoolEntry> constant_pool;
@@ -23,8 +36,8 @@ namespace ClassFile{
 		vector<Member> fields;
 		vector<Member> methods;
 		vector<sp_Attribute> attributes;
-	
 	};
+
 }
 
 #endif

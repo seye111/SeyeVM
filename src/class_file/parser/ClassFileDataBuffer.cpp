@@ -91,25 +91,4 @@ namespace ClassFile{
 		return result;
 	}
 
-	shared_ptr<ClassFileDataBuffer> ClassFileDataBuffer::get_from_file(string & filename) throw(JvmException) {
-		if(logger.is_trace()) logger.log_trace() << "loading class file raw data " << filename << endl;
-		int size = 0;
-		char* data;
-		ifstream file (filename.c_str(), ios::in|ios::binary|ios::ate);
-		if(file.is_open()){
-			size = file.tellg();
-			data = new char[size];
-			if(logger.is_trace()) logger.log_trace() << "size: " << size << endl;
-			file.seekg (0, ios::beg);
-			file.read (data, size);
-			if (!file){
-				throw JvmException ("could not load file " + filename); 
-			}
-			file.close();
-		}else{
-			throw JvmException ("could not load file " + filename);
-		}
-
-		return shared_ptr<ClassFileDataBuffer> (new ClassFileDataBuffer (data, size));
-	}
 }

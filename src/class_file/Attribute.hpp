@@ -13,6 +13,15 @@ using boost::shared_ptr;
 
 namespace ClassFile{
 
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// ClassFile::Attribute
+	// 
+	// represents an attribute of a field, method, other attribute or the class
+	// itself as seen in a java class file
+	//
+	////////////////////////////////////////////////////////////////////////////////
+
 	const int ATTRIBUTE_CODE = 1;
 	const int ATTRIBUTE_CONSTANTVALUE = 2;
 	const int ATTRIBUTE_DEPRICATED = 3;

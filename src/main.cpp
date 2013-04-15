@@ -6,6 +6,7 @@
 #include <iostream>
 #include <boost/shared_ptr.hpp>
 
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -16,7 +17,10 @@ int main(int argc, char** argv) throw (JvmException){
 	try{
 		if(logger.is_info()) logger.log_info() << "Starting JVM..." << endl;
 		string filename(argv[1]);
-		shared_ptr<ClassFile::ClassFileRepresentation> cfrep =  ClassFile::parse_from_file(filename);
+		char* raw_data;
+		int size = bytes_from_file(filename, &raw_data);
+		ClassFile::ClassFileDataBuffer cfdb(raw_data, size);
+		ClassFile::ClassFileRepresentation cfrep =  *ClassFile::parse_from_buffer(cfdb);
 		return 0;
 	}catch (JvmException & ex){
 		cout << "Exception: " << ex.what() << endl;

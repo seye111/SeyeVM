@@ -1,4 +1,4 @@
-#include "ClassFileParser.hpp"
+	#include "ClassFileParser.hpp"
 #include "ClassFileDataBuffer.hpp"
 
 #include <iostream>
@@ -12,12 +12,6 @@ using std::string;
 using std::vector;
 
 namespace ClassFile{
-
-	shared_ptr<ClassFileRepresentation> parse_from_file(string & filename) throw (JvmException){
-		shared_ptr<ClassFileDataBuffer> buffer = ClassFileDataBuffer::get_from_file(filename);
-		shared_ptr<ClassFileRepresentation> result = parse_from_buffer(*buffer);
-		return result;
-	}
 
 	void check_magic(long magic) throw (JvmException);
 	void load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException);
