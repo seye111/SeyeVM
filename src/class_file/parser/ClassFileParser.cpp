@@ -239,7 +239,7 @@ namespace ClassFile{
 				attributes.push_back(sp_Attribute(new SyntheticAttribute()));
 
 			}else if(
-					name == "Signature"	
+					name == "Signature" || name == "RuntimeVisibleAnnotations"	
 				){
 				for(int i=0; i < attribute_length; i++){
 					buffer.get_byte();

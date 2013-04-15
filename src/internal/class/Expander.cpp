@@ -15,10 +15,12 @@ namespace Internal{
 	using ClassFile::ConstantClass;
 	using ClassFile::ConstantUtf8;
 
+	typedef std::pair<string, sp_JvmField> f_map_entry;
+	typedef std::pair<string, sp_JvmMethod> m_map_entry;
 
 	sp_JvmClass Expander::expand_class_representation(){
-		sp_JvmClass result(new JvmClass);
-		JvmClass & jvm_class = *result;
+		sp_jvm_class = sp_JvmClass(new JvmClass);
+		JvmClass & jvm_class = *sp_jvm_class;
 		if(logger.is_info()) logger.log_info() 
 			<< "expanding..." << endl;
 		
@@ -30,20 +32,90 @@ namespace Internal{
 			jvm_class.super_class_name = "n/a";
 		else
 			jvm_class.super_class_name = get_super_class_name();
-		if(logger.is_info()) logger.log_info() 
+		if(logger.is_debug()) logger.log_debug() 
 			<< "super class name : " << jvm_class.super_class_name << endl;
 		
-		return result;
+		expand_members();
+
+		return sp_jvm_class;
 	}
 
+	void Expander::expand_members(){
+		if(logger.is_debug()) logger.log_debug() 
+			<< "expanding members..." << endl;
+		expand_fields();
+		expand_methods();
+	}
+
+	void Expander::expand_fields(){
+		if(logger.is_debug()) logger.log_debug() 
+			<< "fields..." << endl;
+		
+		for(int index=0; index < cfr.methods.size(); index++){
+			ClassFile::Member & cf_field = cfr.methods[index];
+			Internal::sp_JvmField sp_jvm_field(new JvmField);
+			JvmField & jvm_field = *sp_jvm_field;
+			
+			jvm_field.name = get_string(cf_field.name_index);
+			jvm_field.descriptor = get_string(cf_field.descriptor_index);
+			if(logger.is_debug()) logger.log_debug() 
+				<< jvm_field.name << " : " << jvm_field.descriptor << endl;
+			
+			jvm_field.access_flags = cf_field.access_flags;
+			if(jvm_field.is_static()){
+				if(logger.is_debug()) logger.log_debug() 
+					<< "static" << endl;
+				sp_jvm_class->static_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
+			}else{
+				if(logger.is_debug()) logger.log_debug() 
+					<< "instance" << endl;
+				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
+			}
+		}
+
+	}
+
+	void Expander::expand_methods (){
+		if(logger.is_debug()) logger.log_debug() 
+			<< "methods..." << endl;
+
+		for(int index=0; index < cfr.fields.size(); index++){
+			ClassFile::Member & cf_method = cfr.fields[index];
+			Internal::sp_JvmMethod sp_jvm_method(new JvmMethod);
+			JvmMethod & jvm_method = *sp_jvm_method;
+			
+			jvm_method.name = get_string(cf_method.name_index);
+			jvm_method.descriptor = get_string(cf_method.descriptor_index);
+			if(logger.is_debug()) logger.log_debug() 
+				<< jvm_method.name << " : " << jvm_method.descriptor << endl;
+			
+			jvm_method.access_flags = cf_method.access_flags;
+			if(jvm_method.is_static()){
+				if(logger.is_debug()) logger.log_debug() 
+					<< "static" << endl;
+				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
+			}else{
+				if(logger.is_debug()) logger.log_debug() 
+					<< "instance" << endl;
+				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
+			}
+		}
+}
+
 	string & Expander::get_class_name(){
-		int name_index = ((ConstantClass *)check_and_get(cfr.this_class, CONSTANT_CLASS))->name_index;
-		return ((ConstantUtf8 *)check_and_get(name_index, CONSTANT_UTF8))->str;
+		int name_index = ((ConstantClass*)check_and_get(cfr.this_class, CONSTANT_CLASS))->name_index;
+		return get_string(name_index);
 	}
 
 	string & Expander::get_super_class_name(){
-		int name_index = ((ConstantClass *)check_and_get(cfr.super_class, CONSTANT_CLASS))->name_index;
-		return ((ConstantUtf8 *)check_and_get(name_index, CONSTANT_UTF8))->str;
+		int name_index = ((ConstantClass*)check_and_get(cfr.super_class, CONSTANT_CLASS))->name_index;
+		return get_string(name_index);
+	}
+
+	// gets a string from the constant pool at the given index
+	//
+	string & Expander::get_string(int index){
+		return ((ConstantUtf8*)check_and_get(index, CONSTANT_UTF8))->str;
 	}
 
 	//	get a pointer to a constant pool entry at a given index and
@@ -54,7 +126,7 @@ namespace Internal{
 	//
 	//	constant pool should references should all be consistent, but
 	//  handle inconsistencies gracefully anyway
-
+	//
 	ConstantPoolEntry* Expander::check_and_get(int index, int tag){
 		int max_index = cp.size() - 1;
 		if(index < 0 || index > max_index){

@@ -16,15 +16,27 @@ namespace Internal{
 	const int ACC_ABSTRACT  = 0x0400;
 	const int ACC_STRICT  = 0x0800;
 
+	////////////////////////////////////////////////////////////////////////////////
+	//
+	// Internal::AccessControlled
+	// 
+	// both Internal::JvmField and Internal::JvmMethod have access_flags that make
+	// use of (slightly different) subsets of the same set of access flag bits
+	// this class provides methods for querying the values of these flags 
+	//
+	////////////////////////////////////////////////////////////////////////////////
+
+ 
 	class AccessControlled{
 	public:
 		int access_flags;
 		bool is_public() {return ((access_flags & ACC_PUBLIC) > 0);}
-		bool is_protected() {return ((access_flags & ACC_PRIVATE) > 0);}
-		bool is_static() {return ((access_flags & ACC_PROTECTED) > 0);}
-		bool is_final() {return ((access_flags & ACC_STATIC) > 0);}
-		bool is_synchronized() {return ((access_flags & ACC_FINAL) > 0);}
-		bool is_volatile() {return ((access_flags & ACC_SYNCHRONIZED) > 0);}
+		bool is_private() {return ((access_flags & ACC_PRIVATE) > 0);}
+		bool is_protected() {return ((access_flags & ACC_PROTECTED) > 0);}
+		bool is_static() {return ((access_flags & ACC_STATIC) > 0);}
+		bool is_final() {return ((access_flags & ACC_FINAL) > 0);}
+		bool is_synchronized() {return ((access_flags & ACC_SYNCHRONIZED) > 0);}
+		bool is_volatile() {return ((access_flags & ACC_VOLATILE) > 0);}
 		bool is_transient() {return ((access_flags & ACC_TRANSIENT) > 0);}
 		bool is_native() {return ((access_flags & ACC_NATIVE) > 0);}
 		bool is_interface() {return ((access_flags & ACC_INTERFACE) > 0);}
