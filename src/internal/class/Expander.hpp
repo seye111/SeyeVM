@@ -13,7 +13,7 @@ using ClassFile::ConstantPoolEntry;
 
 namespace Internal{
 
-	class expander{
+	class Expander{
 		sp_ClassFileRepresentation sp_cfr;
 		ClassFileRepresentation & cfr;
 		vector<sp_ConstantPoolEntry> & cp;
@@ -21,7 +21,7 @@ namespace Internal{
 		string & get_super_class_name();
 		ConstantPoolEntry* check_and_get(int index, int tag);
 	public:
-		expander(sp_ClassFileRepresentation sp_cfr)	: 
+		Expander(sp_ClassFileRepresentation sp_cfr)	: 
 			sp_cfr(sp_cfr),
 			cfr(*sp_cfr),
 			cp(cfr.constant_pool)

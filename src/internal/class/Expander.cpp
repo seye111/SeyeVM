@@ -1,4 +1,4 @@
-#include "expander.hpp"
+#include "Expander.hpp"
 
 #include <sstream>
 
@@ -16,7 +16,7 @@ namespace Internal{
 	using ClassFile::ConstantUtf8;
 
 
-	sp_JvmClass expander::expand_class_representation(){
+	sp_JvmClass Expander::expand_class_representation(){
 		sp_JvmClass result(new JvmClass);
 		JvmClass & jvm_class = *result;
 		if(logger.is_info()) logger.log_info() 
@@ -36,12 +36,12 @@ namespace Internal{
 		return result;
 	}
 
-	string & expander::get_class_name(){
-		int name_index = ((ConstantClass *)check_and_get(cfr.this_class, CONSTANT_UTF8))->name_index;
+	string & Expander::get_class_name(){
+		int name_index = ((ConstantClass *)check_and_get(cfr.this_class, CONSTANT_CLASS))->name_index;
 		return ((ConstantUtf8 *)check_and_get(name_index, CONSTANT_UTF8))->str;
 	}
 
-	string & expander::get_super_class_name(){
+	string & Expander::get_super_class_name(){
 		int name_index = ((ConstantClass *)check_and_get(cfr.super_class, CONSTANT_CLASS))->name_index;
 		return ((ConstantUtf8 *)check_and_get(name_index, CONSTANT_UTF8))->str;
 	}
@@ -55,7 +55,7 @@ namespace Internal{
 	//	constant pool should references should all be consistent, but
 	//  handle inconsistencies gracefully anyway
 
-	ConstantPoolEntry* expander::check_and_get(int index, int tag){
+	ConstantPoolEntry* Expander::check_and_get(int index, int tag){
 		int max_index = cp.size() - 1;
 		if(index < 0 || index > max_index){
 			ostringstream os;
