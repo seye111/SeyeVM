@@ -18,34 +18,55 @@ namespace Internal{
 	typedef std::pair<string, sp_JvmField> f_map_entry;
 	typedef std::pair<string, sp_JvmMethod> m_map_entry;
 
-	void Expander::expand_class_representation(){
+	void Expander::expand_class_representation(const string & name){
 		if(logger.is_info()) logger.log_info() 
-			<< "expanding..." << endl;
+			<< indent << name << " : expanding..." << endl;
 		
 		jvm_class.name = get_class_name();
-		if(logger.is_info()) logger.log_info() 
-			<< "name             : " << jvm_class.name << endl;
-		
-		if(jvm_class.name == "java/lang/Object")
-			jvm_class.super_class_name = "n/a";
-		else
-			jvm_class.super_class_name = get_super_class_name();
-		if(logger.is_debug()) logger.log_debug() 
-			<< "super class name : " << jvm_class.super_class_name << endl;
-		
+		if(jvm_class.name != name){
+			ostringstream os;
+			os << "name mismatch - expected to expand " << name
+				<< " but class file representation contains "
+				<< jvm_class.name << endl;
+			throw JvmException (os.str());
+		}
+		if(jvm_class.name == "java/lang/Object"){
+			if(logger.is_debug()) logger.log_debug() 
+				<< indent << jvm_class.name << " : has no super class"  << endl;
+		}else{
+			string super_class_name = get_super_class_name();
+			if(logger.is_debug()) logger.log_debug() 
+				<< indent << jvm_class.name << " : super class name : " << super_class_name << endl;
+			jvm_class.super_class = class_loader.get_class(super_class_name, depth + 1);
+		}
+		expand_interfaces();
 		expand_members();
+	}
+
+	void Expander::expand_interfaces(){
+		if(logger.is_debug()) logger.log_debug() 
+			<< indent << jvm_class.name << " : " 
+			<< "expanding interfaces..." << endl;
+		for(int index = 0; index < cfr.interfaces.size(); index++){
+			int name_index = ((ConstantClass*)check_and_get(cfr.interfaces[index], CONSTANT_CLASS))->name_index;
+			string interface_name = get_string(name_index);
+			if(logger.is_debug()) logger.log_debug() 
+				<< indent << jvm_class.name << " : " 
+				<< interface_name << endl;
+			jvm_class.interfaces.push_back(class_loader.get_class(interface_name, depth + 1));	
+		}
 	}
 
 	void Expander::expand_members(){
 		if(logger.is_debug()) logger.log_debug() 
-			<< "expanding members..." << endl;
+			<< indent << jvm_class.name << " : " << "expanding members..." << endl;
 		expand_fields();
 		expand_methods();
 	}
 
 	void Expander::expand_fields(){
 		if(logger.is_debug()) logger.log_debug() 
-			<< "fields..." << endl;
+			<< indent << jvm_class.name << " : " << "===== fields..." << endl;
 		
 		for(int index=0; index < cfr.methods.size(); index++){
 			ClassFile::Member & cf_field = cfr.methods[index];
@@ -55,16 +76,16 @@ namespace Internal{
 			jvm_field.name = get_string(cf_field.name_index);
 			jvm_field.descriptor = get_string(cf_field.descriptor_index);
 			if(logger.is_debug()) logger.log_debug() 
-				<< jvm_field.name << " : " << jvm_field.descriptor << endl;
+				<< indent << jvm_class.name << " : " << jvm_field.name << " : " << jvm_field.descriptor << endl;
 			
 			jvm_field.access_flags = cf_field.access_flags;
 			if(jvm_field.is_static()){
 				if(logger.is_debug()) logger.log_debug() 
-					<< "static" << endl;
+					<< indent << jvm_class.name << " : " << jvm_class.name  << "static" << endl;
 				sp_jvm_class->static_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}else{
 				if(logger.is_debug()) logger.log_debug() 
-					<< "instance" << endl;
+					<< indent << jvm_class.name << " : instance" << endl;
 				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}
 		}
@@ -73,7 +94,7 @@ namespace Internal{
 
 	void Expander::expand_methods (){
 		if(logger.is_debug()) logger.log_debug() 
-			<< "methods..." << endl;
+			<< indent << jvm_class.name << " : " << "===== methods..." << endl;
 
 		for(int index=0; index < cfr.fields.size(); index++){
 			ClassFile::Member & cf_method = cfr.fields[index];
@@ -82,17 +103,20 @@ namespace Internal{
 			
 			jvm_method.name = get_string(cf_method.name_index);
 			jvm_method.descriptor = get_string(cf_method.descriptor_index);
+			
 			if(logger.is_debug()) logger.log_debug() 
-				<< jvm_method.name << " : " << jvm_method.descriptor << endl;
+				<< indent << jvm_class.name << " : " << jvm_method.name 
+				<< " : " << jvm_method.descriptor << endl;
 			
 			jvm_method.access_flags = cf_method.access_flags;
+			
 			if(jvm_method.is_static()){
 				if(logger.is_debug()) logger.log_debug() 
-					<< "static" << endl;
+					<< indent << jvm_class.name << " : " << "static" << endl;
 				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}else{
 				if(logger.is_debug()) logger.log_debug() 
-					<< "instance" << endl;
+					<< indent << jvm_class.name << " : " << "instance" << endl;
 				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}
 		}

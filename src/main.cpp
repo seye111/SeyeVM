@@ -14,11 +14,16 @@ int main(int argc, char** argv) throw (JvmException){
 	LOG_LEVEL = LOG_LEVEL_TRACE;
 	try{
 		if(logger.is_info()) logger.log_info() << "starting JVM..." << endl;
-		string filename(argv[1]);
-		Loader::SingleFileClassLoader class_loader;
-		class_loader.get_class(filename, 0);		
+		string classpath(argv[1]);
+		Loader::SingleFileClassLoader class_loader(classpath);
+		if(argc == 3){
+			class_loader.get_class(argv[2], 0);
+		}else{
+			class_loader.get_class("java/lang/Runnable", 0);		
+			class_loader.get_class("java/lang/Object", 0);		
+		}
 		return 0;
-	}catch (JvmException & ex){
+	}catch (SimpleException & ex){
 		cout << "exception: " << ex.what() << endl;
 		return -1;
 	}

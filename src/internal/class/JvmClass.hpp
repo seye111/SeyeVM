@@ -18,11 +18,14 @@ namespace Internal{
 	class JvmClass{
 	public:
 		string name;
-		string super_class_name;
+		shared_ptr<JvmClass>super_class;
+		vector<shared_ptr<JvmClass> > interfaces;
 		map<string, sp_JvmField> static_fields;
 		map<string, sp_JvmField> instance_fields;
 		map<string, sp_JvmMethod> static_methods;
 		map<string, sp_JvmMethod> instance_methods;
+		bool loading;
+		bool loaded;
 	};
 
 	typedef shared_ptr<JvmClass> sp_JvmClass;
