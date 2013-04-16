@@ -18,9 +18,7 @@ namespace Internal{
 	typedef std::pair<string, sp_JvmField> f_map_entry;
 	typedef std::pair<string, sp_JvmMethod> m_map_entry;
 
-	sp_JvmClass Expander::expand_class_representation(){
-		sp_jvm_class = sp_JvmClass(new JvmClass);
-		JvmClass & jvm_class = *sp_jvm_class;
+	void Expander::expand_class_representation(){
 		if(logger.is_info()) logger.log_info() 
 			<< "expanding..." << endl;
 		
@@ -36,8 +34,6 @@ namespace Internal{
 			<< "super class name : " << jvm_class.super_class_name << endl;
 		
 		expand_members();
-
-		return sp_jvm_class;
 	}
 
 	void Expander::expand_members(){
@@ -100,7 +96,7 @@ namespace Internal{
 				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}
 		}
-}
+	}
 
 	string & Expander::get_class_name(){
 		int name_index = ((ConstantClass*)check_and_get(cfr.this_class, CONSTANT_CLASS))->name_index;

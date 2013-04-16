@@ -14,10 +14,15 @@ using ClassFile::ConstantPoolEntry;
 namespace Internal{
 
 	class Expander{
-		sp_JvmClass sp_jvm_class;
+		// fields
 		sp_ClassFileRepresentation sp_cfr;
 		ClassFileRepresentation & cfr;
+		sp_JvmClass sp_jvm_class;
+		JvmClass & jvm_class;
 		vector<sp_ConstantPoolEntry> & cp;
+		int depth;
+
+		//methods
 		string & get_class_name();
 		string & get_super_class_name();
 		void expand_members();
@@ -26,13 +31,16 @@ namespace Internal{
 		string & get_string(int index);
 		ConstantPoolEntry* check_and_get(int index, int tag);
 	public:
-		Expander(sp_ClassFileRepresentation sp_cfr)	: 
+		Expander(sp_ClassFileRepresentation sp_cfr, sp_JvmClass sp_jvm_class, int depth)	: 
 			sp_cfr(sp_cfr),
 			cfr(*sp_cfr),
+			sp_jvm_class(sp_jvm_class),
+			jvm_class(*sp_jvm_class),
+			depth(depth),
 			cp(cfr.constant_pool)
 			{} 
 		
-		sp_JvmClass expand_class_representation();
+		void expand_class_representation();
 	};
 }
 
