@@ -49,7 +49,7 @@ namespace Internal{
 			cp(cfr.constant_pool)
 			{
 				for(int i=0; i<depth; i++)
-					indent.append("....");
+					indent.append("    ");
 			} 
 		
 		void expand_class_representation(const string & name);

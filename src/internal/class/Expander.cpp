@@ -41,6 +41,8 @@ namespace Internal{
 		}
 		expand_interfaces();
 		expand_members();
+		if(logger.is_info()) logger.log_info() 
+			<< indent << name << " : ...expanded" << endl;
 	}
 
 	void Expander::expand_interfaces(){
@@ -75,17 +77,16 @@ namespace Internal{
 			
 			jvm_field.name = get_string(cf_field.name_index);
 			jvm_field.descriptor = get_string(cf_field.descriptor_index);
-			if(logger.is_debug()) logger.log_debug() 
-				<< indent << jvm_class.name << " : " << jvm_field.name << " : " << jvm_field.descriptor << endl;
-			
 			jvm_field.access_flags = cf_field.access_flags;
 			if(jvm_field.is_static()){
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : " << jvm_class.name  << "static" << endl;
+					<< indent << jvm_class.name << " : [static] " << jvm_field.name << " : " 
+					<< jvm_field.descriptor << endl;
 				sp_jvm_class->static_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}else{
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : instance" << endl;
+					<< indent << jvm_class.name << " : [instance] " << jvm_field.name << " : " 
+					<< jvm_field.descriptor << endl;
 				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}
 		}
@@ -104,19 +105,17 @@ namespace Internal{
 			jvm_method.name = get_string(cf_method.name_index);
 			jvm_method.descriptor = get_string(cf_method.descriptor_index);
 			
-			if(logger.is_debug()) logger.log_debug() 
-				<< indent << jvm_class.name << " : " << jvm_method.name 
-				<< " : " << jvm_method.descriptor << endl;
-			
 			jvm_method.access_flags = cf_method.access_flags;
 			
 			if(jvm_method.is_static()){
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : " << "static" << endl;
+					<< indent << jvm_class.name << " : [static] " << jvm_method.name << " : " 
+					<< jvm_method.descriptor << endl;
 				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}else{
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : " << "instance" << endl;
+					<< indent << jvm_class.name << " : [instance] " << jvm_method.name << " : " 
+					<< jvm_method.descriptor << endl;
 				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}
 		}

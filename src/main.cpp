@@ -11,7 +11,7 @@ using std::string;
 using std::endl;
 
 int main(int argc, char** argv) throw (JvmException){
-	LOG_LEVEL = LOG_LEVEL_TRACE;
+	LOG_LEVEL = LOG_LEVEL_DEBUG;
 	try{
 		if(logger.is_info()) logger.log_info() << "starting JVM..." << endl;
 		string classpath(argv[1]);
