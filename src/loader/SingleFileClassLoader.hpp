@@ -19,7 +19,7 @@ namespace Loader{
 			classes[name] = sp_jvm_class;
 			sp_jvm_class->loading = true;
 			sp_jvm_class->loaded = false;
-			// cant send shared pointer to this as receiver will try to clean up
+			// cant send shared pointer to 'this' as receiver will try to clean up
 			// 
 			Expander(*this, sp_cfr, sp_jvm_class, depth).expand_class_representation(name);
 			sp_jvm_class->loading = false;

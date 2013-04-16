@@ -70,8 +70,8 @@ namespace Internal{
 		if(logger.is_debug()) logger.log_debug() 
 			<< indent << jvm_class.name << " : " << "===== fields..." << endl;
 		
-		for(int index=0; index < cfr.methods.size(); index++){
-			ClassFile::Member & cf_field = cfr.methods[index];
+		for(int index=0; index < cfr.fields.size(); index++){
+			ClassFile::Member & cf_field = cfr.fields[index];
 			Internal::sp_JvmField sp_jvm_field(new JvmField);
 			JvmField & jvm_field = *sp_jvm_field;
 			
@@ -80,12 +80,16 @@ namespace Internal{
 			jvm_field.access_flags = cf_field.access_flags;
 			if(jvm_field.is_static()){
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [static] " << jvm_field.name << " : " 
+					<< indent << jvm_class.name << " : [static (" << std::hex 
+					<< cf_field.access_flags << std::dec << ")] " 
+					<< jvm_field.name << " : " 
 					<< jvm_field.descriptor << endl;
 				sp_jvm_class->static_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}else{
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [instance] " << jvm_field.name << " : " 
+					<< indent << jvm_class.name << " : [instance (" << std::hex 
+					<< cf_field.access_flags << std::dec << ")] " 
+					<< jvm_field.name << " : " 
 					<< jvm_field.descriptor << endl;
 				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}
@@ -97,8 +101,8 @@ namespace Internal{
 		if(logger.is_debug()) logger.log_debug() 
 			<< indent << jvm_class.name << " : " << "===== methods..." << endl;
 
-		for(int index=0; index < cfr.fields.size(); index++){
-			ClassFile::Member & cf_method = cfr.fields[index];
+		for(int index=0; index < cfr.methods.size(); index++){
+			ClassFile::Member & cf_method = cfr.methods[index];
 			Internal::sp_JvmMethod sp_jvm_method(new JvmMethod);
 			JvmMethod & jvm_method = *sp_jvm_method;
 			
@@ -109,12 +113,17 @@ namespace Internal{
 			
 			if(jvm_method.is_static()){
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [static] " << jvm_method.name << " : " 
+					<< indent << jvm_class.name << " : [static (" << std::hex 
+					<< cf_method.access_flags << std::dec << ")] " 
+					<< jvm_method.name << " : " 
 					<< jvm_method.descriptor << endl;
 				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}else{
 				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [instance] " << jvm_method.name << " : " 
+					<< indent << jvm_class.name << " : [instance (" << std::hex 
+					<< cf_method.access_flags << std::dec << ")] " 
+					<< indent << jvm_class.name << " : [instance] " 
+					<< jvm_method.name << " : " 
 					<< jvm_method.descriptor << endl;
 				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}
