@@ -2,6 +2,7 @@
 #define LOADER_SINGLEFILECLASSLOADER
 
 #include "ClassLoader.hpp"
+#include "../class_file/parser/ClassFileParser.hpp"
 
 namespace Loader{
 
