@@ -1,6 +1,8 @@
 #ifndef JVM_ACCESS_CONTROLLED
 #define JVM_ACCESS_CONTROLLED
 
+#include <string>
+
 namespace Jvm{
 
 	const int ACC_PUBLIC  = 0x0001;
@@ -20,7 +22,7 @@ namespace Jvm{
 	//
 	// AccessControlled
 	// 
-	// both Internal::JvmField and Internal::JvmMethod have access_flags that make
+	// both Jvm::JvmField and Jvm::JvmMethod have access_flags that make
 	// use of (slightly different) subsets of the same set of access flag bits
 	// this class provides methods for querying the values of these flags 
 	//
@@ -42,6 +44,8 @@ namespace Jvm{
 		bool is_interface() {return ((access_flags & ACC_INTERFACE) > 0);}
 		bool is_abstract() {return ((access_flags & ACC_ABSTRACT) > 0);}
 		bool is_strict() {return ((access_flags & ACC_STRICT) > 0);}
+	
+		std::string get_access_string();
 	};
 
 }

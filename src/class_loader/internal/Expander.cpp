@@ -21,6 +21,12 @@ namespace Jvm{
 				<< jvm_class.name << endl;
 			throw JvmException (os.str());
 		}
+
+		jvm_class.access_flags = cfr.access_flags;
+		if(logger.is_info()) logger.log_info() 
+			<< indent << jvm_class.name << " : access specifiers [" 
+				<< jvm_class.get_access_string() << "]" << endl; 
+
 		if(jvm_class.name == "java/lang/Object"){
 			if(logger.is_debug()) logger.log_debug() 
 				<< indent << jvm_class.name << " : has no super class"  << endl;
@@ -69,19 +75,13 @@ namespace Jvm{
 			jvm_field.name = get_string(cf_field.name_index);
 			jvm_field.descriptor = get_string(cf_field.descriptor_index);
 			jvm_field.access_flags = cf_field.access_flags;
+			if(logger.is_debug()) logger.log_debug() 
+				<< indent << jvm_class.name << " : [" << jvm_field.get_access_string() << "] " 
+				<< jvm_field.name << " : " 
+				<< jvm_field.descriptor << endl;
 			if(jvm_field.is_static()){
-				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [static (" << std::hex 
-					<< cf_field.access_flags << std::dec << ")] " 
-					<< jvm_field.name << " : " 
-					<< jvm_field.descriptor << endl;
 				sp_jvm_class->static_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}else{
-				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [instance (" << std::hex 
-					<< cf_field.access_flags << std::dec << ")] " 
-					<< jvm_field.name << " : " 
-					<< jvm_field.descriptor << endl;
 				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}
 		}
@@ -102,20 +102,13 @@ namespace Jvm{
 			
 			jvm_method.access_flags = cf_method.access_flags;
 			
+			if(logger.is_debug()) logger.log_debug() 
+				<< indent << jvm_class.name << " : [" << jvm_method.get_access_string() << "] " 
+				<< jvm_method.name << " : " 
+				<< jvm_method.descriptor << endl;
 			if(jvm_method.is_static()){
-				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [static (" << std::hex 
-					<< cf_method.access_flags << std::dec << ")] " 
-					<< jvm_method.name << " : " 
-					<< jvm_method.descriptor << endl;
 				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}else{
-				if(logger.is_debug()) logger.log_debug() 
-					<< indent << jvm_class.name << " : [instance (" << std::hex 
-					<< cf_method.access_flags << std::dec << ")] " 
-					<< indent << jvm_class.name << " : [instance] " 
-					<< jvm_method.name << " : " 
-					<< jvm_method.descriptor << endl;
 				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}
 		}

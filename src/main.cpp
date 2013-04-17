@@ -1,5 +1,5 @@
 #include "class_loader/ClassLoader.hpp"
-#include "class_loader/SingleFileByteBufferSource.hpp"
+#include "class_loader/ClassPathByteBufferSource.hpp"
 #include "util/log.hpp"
 
 using std::string;
@@ -11,7 +11,7 @@ int main(int argc, char** argv) throw (JvmException){
 		if(logger.is_info()) logger.log_info() << "starting JVM..." << endl;
 		string classpath(argv[1]);
 		Jvm::ClassLoader class_loader(
-			Jvm::sp_ByteBufferSource(new Jvm::SingleFileByteBufferSource(classpath)));
+			Jvm::sp_ByteBufferSource(new Jvm::ClassPathByteBufferSource(classpath)));
 		class_loader.get_class(argv[2], 0);
 		return 0;
 	}catch (JvmException & ex){

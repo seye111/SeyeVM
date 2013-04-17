@@ -19,9 +19,8 @@ namespace Jvm{
 			file.close();
 			return sp_byte_buffer;
 		}else{
-			throw JvmException ("could not load file " + filename);
+			return sp_byte_buffer;
 		}
-		return sp_byte_buffer;
 	}
 
 

@@ -40,7 +40,8 @@ class ClassLoader;
 			cfr(*sp_cfr),
 			sp_jvm_class(sp_jvm_class),
 			jvm_class(*sp_jvm_class),
-			cp(cfr.constant_pool)
+			cp(cfr.constant_pool),
+			depth(depth)
 			{
 				for(int i=0; i<depth; i++)
 					indent.append("    ");

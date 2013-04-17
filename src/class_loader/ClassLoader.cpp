@@ -20,6 +20,9 @@ namespace Jvm{
 
 	sp_JvmClass ClassLoader::load_class(const std::string & name, int depth = 0){
 		sp_ByteBuffer sp_byte_buffer = sp_byte_buffer_source->get_bytes(name);
+		if(!sp_byte_buffer.get()){
+			throw JvmException ("could not find bytes for class " + name);
+		}
 		ClassFileDataBuffer cfdb(sp_byte_buffer);
 		sp_ClassFileRepresentation sp_cfr = ClassFileParser::parse_from_buffer(cfdb);
 		sp_JvmClass sp_jvm_class(new JvmClass); 

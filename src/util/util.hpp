@@ -35,7 +35,5 @@ struct byte_buffer{
 	byte_buffer(int size) : size(size), data(new char[size]) {}
 };
 
-byte_buffer bytes_from_file(string & filename);
-
 
 #endif

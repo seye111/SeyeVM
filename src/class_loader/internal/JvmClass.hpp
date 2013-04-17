@@ -1,6 +1,7 @@
 #ifndef JVMCLASS_H
 #define JVMCLASS_H
 
+#include "../AccessControlled.hpp"
 #include "JvmField.hpp"
 #include "JvmMethod.hpp"
 
@@ -13,7 +14,7 @@
 
 namespace Jvm{
 
-	class JvmClass{
+	class JvmClass : public AccessControlled {
 	public:
 		std::string name;
 		boost::shared_ptr<JvmClass>super_class;
@@ -22,6 +23,7 @@ namespace Jvm{
 		std::map<std::string, sp_JvmField> instance_fields;
 		std::map<std::string, sp_JvmMethod> static_methods;
 		std::map<std::string, sp_JvmMethod> instance_methods;
+		int access_flags;
 		bool loading;
 		bool loaded;
 	};
