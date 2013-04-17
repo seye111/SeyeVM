@@ -1,7 +1,7 @@
-#ifndef INTERNAL_ACCESS_CONTROLLED
-#define INTERNAL_ACCESS_CONTROLLED
+#ifndef JVM_ACCESS_CONTROLLED
+#define JVM_ACCESS_CONTROLLED
 
-namespace Internal{
+namespace Jvm{
 
 	const int ACC_PUBLIC  = 0x0001;
 	const int ACC_PRIVATE  = 0x0002;
@@ -18,7 +18,7 @@ namespace Internal{
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// Internal::AccessControlled
+	// AccessControlled
 	// 
 	// both Internal::JvmField and Internal::JvmMethod have access_flags that make
 	// use of (slightly different) subsets of the same set of access flag bits
@@ -26,7 +26,7 @@ namespace Internal{
 	//
 	////////////////////////////////////////////////////////////////////////////////
 
- 
+
 	class AccessControlled{
 	public:
 		int access_flags;

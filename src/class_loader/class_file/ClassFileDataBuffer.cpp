@@ -10,16 +10,13 @@ using std::endl;
 using std::string;
 using std::ios;
 
-namespace ClassFile{
+namespace Jvm{
 
-	ClassFileDataBuffer::ClassFileDataBuffer(char* data, int size) : 
-		data(data),
-		size(size),
+	ClassFileDataBuffer::ClassFileDataBuffer(sp_ByteBuffer sp_byte_buffer) : 
+		sp_byte_buffer(sp_byte_buffer),
 		pos(0){}
 
-	ClassFileDataBuffer::~ClassFileDataBuffer() {
-		delete[] data;
-	}
+	ClassFileDataBuffer::~ClassFileDataBuffer() {}
 
 	long ClassFileDataBuffer::get_n(int n) {
 		long result = 0;
@@ -73,22 +70,21 @@ namespace ClassFile{
 	}
 
 	char ClassFileDataBuffer::get_byte(){
-		if (pos >= size){
+		if (pos >= sp_byte_buffer->size){
 			throw JvmException("attempt to read beyond buffer");
 		}
-		return data[pos++];
+		return sp_byte_buffer->data[pos++];
 	}
 
 	string ClassFileDataBuffer::get_string(){
 		int length = get_u2();
-		
-		char* chars = new char[length + 1]; 
-		for(int i=0; i<length; i++)
-			chars[i] = get_byte();
-		chars[length] = NULL;
-		string result = string(chars);
-		delete[] chars;
+		ByteBuffer chars(length + 1);
+		for(int i = 0; i < length; i++)
+			chars.data[i] = get_byte();
+		chars.data[length] = NULL;
+		string result = string(chars.data);
 		return result;
-	}
+
+	}	
 
 }

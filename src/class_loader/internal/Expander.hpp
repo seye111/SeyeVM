@@ -1,23 +1,17 @@
-#ifndef INTERNAL_EXPANDER_H
-#define INTERNAL_EXPANDER_H
+#ifndef EXPANDER_H
+#define EXPANDER_H
 
-#include "../../class_file/ClassFileRepresentation.hpp"
-#include "../../util/util.hpp"
-#include "../../loader/ClassLoader.hpp"
 #include "JvmClass.hpp"
 
-using ClassFile::sp_ClassFileRepresentation;
-using ClassFile::ClassFileRepresentation;
-using ClassFile::sp_ConstantPoolEntry;
-using ClassFile::ConstantPoolEntry;
+#include "../ClassLoader.hpp"
 
-namespace Loader{
-	class ClassLoader;
-}
+#include "../class_file/ClassFileRepresentation.hpp"
+#include "../../util/util.hpp"
 
-using Loader::ClassLoader;
 
-namespace Internal{
+namespace Jvm{
+
+class ClassLoader;
 
 	class Expander{
 		// fields
@@ -26,17 +20,17 @@ namespace Internal{
 		ClassFileRepresentation & cfr;
 		sp_JvmClass sp_jvm_class;
 		JvmClass & jvm_class;
-		vector<sp_ConstantPoolEntry> & cp;
+		std::vector<sp_ConstantPoolEntry> & cp;
 		int depth;
-		string indent;
+		std::string indent;
 
 		//methods
-		string & get_class_name();
-		string & get_super_class_name();
+		std::string & get_class_name();
+		std::string & get_super_class_name();
 		void expand_members();
 		void expand_fields();
 		void expand_methods();
-		string & get_string(int index);
+		std::string & get_string(int index);
 		void expand_interfaces();
 		ConstantPoolEntry* check_and_get(int index, int tag);
 	public:
@@ -54,6 +48,9 @@ namespace Internal{
 		
 		void expand_class_representation(const string & name);
 	};
+
+
 }
+
 
 #endif

@@ -4,16 +4,7 @@
 
 using std::ostringstream;
 
-namespace Internal{
-
-
-	using ClassFile::CONSTANT_CLASS;
-	using ClassFile::CONSTANT_UTF8;
-
-	using ClassFile::CONSTANT_MAX_TAG;
-
-	using ClassFile::ConstantClass;
-	using ClassFile::ConstantUtf8;
+namespace Jvm{
 
 	typedef std::pair<string, sp_JvmField> f_map_entry;
 	typedef std::pair<string, sp_JvmMethod> m_map_entry;
@@ -71,8 +62,8 @@ namespace Internal{
 			<< indent << jvm_class.name << " : " << "===== fields..." << endl;
 		
 		for(int index=0; index < cfr.fields.size(); index++){
-			ClassFile::Member & cf_field = cfr.fields[index];
-			Internal::sp_JvmField sp_jvm_field(new JvmField);
+			ClassFileMember & cf_field = cfr.fields[index];
+			sp_JvmField sp_jvm_field(new JvmField);
 			JvmField & jvm_field = *sp_jvm_field;
 			
 			jvm_field.name = get_string(cf_field.name_index);
@@ -102,8 +93,8 @@ namespace Internal{
 			<< indent << jvm_class.name << " : " << "===== methods..." << endl;
 
 		for(int index=0; index < cfr.methods.size(); index++){
-			ClassFile::Member & cf_method = cfr.methods[index];
-			Internal::sp_JvmMethod sp_jvm_method(new JvmMethod);
+			ClassFileMember & cf_method = cfr.methods[index];
+			sp_JvmMethod sp_jvm_method(new JvmMethod);
 			JvmMethod & jvm_method = *sp_jvm_method;
 			
 			jvm_method.name = get_string(cf_method.name_index);
@@ -173,10 +164,11 @@ namespace Internal{
 		if(entry->get_tag() != tag){
 			ostringstream os;
 			os << "tag mismatch at index " << index 
-				<< ", requested " << ClassFile::tag_names[tag]
-				<< ", found " << ClassFile::tag_names[entry->get_tag()];
+				<< ", requested " << CONSTANT_POOL_TAG_NAMES[tag]
+				<< ", found " << CONSTANT_POOL_TAG_NAMES[entry->get_tag()];
 			throw JvmException (os.str());
 		}
 		return entry;
 	}
+
 }

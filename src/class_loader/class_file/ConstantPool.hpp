@@ -1,19 +1,13 @@
-#ifndef CLASSFILECONSTANTPOOL_H
-#define CLASSFILECONSTANTPOOL_H
+#ifndef JVM_CONSTANTPOOL_H
+#define JVM_CONSTANTPOOL_H
 
-#include "../util/log.hpp"
-
+#include "../../util/log.hpp"
 
 #include <iostream>
 #include <string>
 #include <boost/shared_ptr.hpp>
 
-
-using std::string;
-using std::endl;
-using boost::shared_ptr;
-
-namespace ClassFile{
+namespace Jvm{
 
 	const int CONSTANT_UTF8 = 1;
 	const int CONSTANT_INTEGER = 3;
@@ -29,7 +23,7 @@ namespace ClassFile{
 
 	const int CONSTANT_MAX_TAG = 12;
 
-	static string tag_names[] = {
+	static std::string CONSTANT_POOL_TAG_NAMES[] = {
 		"UNUSED",
 		"CONSTANT_UTF8",
 		"UNUSED",
@@ -58,12 +52,12 @@ namespace ClassFile{
 		virtual int get_tag(){return 0;}
 	};
 
-	typedef shared_ptr<ConstantPoolEntry> sp_ConstantPoolEntry;
+	typedef boost::shared_ptr<ConstantPoolEntry> sp_ConstantPoolEntry;
 
 	class ConstantUtf8 : public ConstantPoolEntry{
 	public:
-		string str;
-		ConstantUtf8(const string & str) : str(str) {
+		std::string str;
+		ConstantUtf8(const std::string & str) : str(str) {
 			if(logger.is_trace()) logger.log_trace()
 				<< "CONSTANT_Utf8 initialized with \"" << str << "\"  " << endl;
 		}

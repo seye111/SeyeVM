@@ -11,14 +11,9 @@ using std::ostringstream;
 using std::string;
 using std::vector;
 
-namespace ClassFile{
+namespace Jvm{
 
-	void check_magic(long magic) throw (JvmException);
-	void load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException);
-	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes);
-	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Member> & members);
-
-	shared_ptr<ClassFileRepresentation> parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
+	shared_ptr<ClassFileRepresentation> ClassFileParser::parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
 		if(logger.is_debug()) logger.log_debug() << "parsing class file data..." << endl;
 		check_magic(buffer.get_u4()); 
 
@@ -28,7 +23,7 @@ namespace ClassFile{
 		int minor = buffer.get_u2();
 		cfrep.minor_version = minor;
 		if(logger.is_trace()) logger.log_trace() << "minor version - " << minor << endl;
-	
+
 		int major = buffer.get_u2();
 		cfrep.major_version = major;
 		if(logger.is_trace()) logger.log_trace() << "major version - " << major << endl;
@@ -59,7 +54,7 @@ namespace ClassFile{
 		return cfrep_sptr;
 	}
 
-	void check_magic(long magic) throw (JvmException){
+	void ClassFileParser::check_magic(long magic) throw (JvmException){
 		if(magic == MAGIC){
 			if(logger.is_trace()) logger.log_trace() << "magic number checked" << endl;
 		}else{
@@ -69,7 +64,7 @@ namespace ClassFile{
 		}
 	}
 
-	void load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException){
+	void ClassFileParser::load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException){
 		
 		int count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << "constant pool count - " << count << endl;
@@ -148,7 +143,7 @@ namespace ClassFile{
 		}
 	}
 
-	void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
+	void ClassFileParser::parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
 		int attribute_count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << attribute_count << " attribute(s)" << endl;
 		for(int index = 0; index < attribute_count; index++){
@@ -250,12 +245,12 @@ namespace ClassFile{
 		}
 	}
 
-	void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<Member> & members){
+	void ClassFileParser::parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<ClassFileMember> & members){
 		int member_count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << "member_count " << member_count << endl;
 		for(int index = 0; index < member_count; index++){
 			if(logger.is_trace()) logger.log_trace() << index << " - ";
-			Member member;
+			ClassFileMember member;
 			member.access_flags = buffer.get_u2();
 			member.name_index = buffer.get_u2();
 			member.descriptor_index = buffer.get_u2();
@@ -267,7 +262,6 @@ namespace ClassFile{
 			members.push_back(member);
 		}
 	}
-
 
 
 }

@@ -1,5 +1,7 @@
-#ifndef CLASSFILE_CLASSFILEDATABUFFER_H
-#define CLASSFILE_CLASSFILEDATABUFFER_H
+#ifndef JVM_CLASSFILEDATABUFFER_H
+#define JVM_CLASSFILEDATABUFFER_H
+
+#include "../ByteBuffer.hpp"
 
 #include "../../util/util.hpp"
 
@@ -9,11 +11,11 @@
 using boost::shared_ptr;
 using std::string;
 
-namespace ClassFile{
-	
+namespace Jvm{
+
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// class ClassFile::ClassFileDataBuffer
+	// class ClassFileDataBuffer
 	//
 	// provides methods to sequentially extract data types relevant to the parsing 
 	// of the raw binary data of a java class file.
@@ -26,14 +28,14 @@ namespace ClassFile{
 	//
 	////////////////////////////////////////////////////////////////////////////////
 
-   	class ClassFileDataBuffer {
-		char* data;
-		int size;
+		class ClassFileDataBuffer {
+		sp_ByteBuffer sp_byte_buffer;
 		int pos;
 		long get_n(int n);
 
-	public:
-		ClassFileDataBuffer (char* data, int size);
+		public:
+		
+		ClassFileDataBuffer (sp_ByteBuffer sp_byte_buffer);
 		long get_u4();
 		int get_u2();
 		int get_u1();

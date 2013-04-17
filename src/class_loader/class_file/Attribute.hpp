@@ -1,26 +1,20 @@
-#ifndef CLASSFILE_ATTRIBUTE
-#define CLASSFILE_ATTRIBUTE
+#ifndef JVM_ATTRIBUTE
+#define JVM_ATTRIBUTE
 
 #include <iostream>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-using std::cout;
-using std::endl;
-using std::vector;
-using std::string;
-using boost::shared_ptr;
+////////////////////////////////////////////////////////////////////////////////
+//
+// Attribute
+// 
+// represents an attribute of a field, method, other attribute or the class
+// itself as seen in a java class file
+//
+////////////////////////////////////////////////////////////////////////////////
 
-namespace ClassFile{
-
-	////////////////////////////////////////////////////////////////////////////////
-	//
-	// ClassFile::Attribute
-	// 
-	// represents an attribute of a field, method, other attribute or the class
-	// itself as seen in a java class file
-	//
-	////////////////////////////////////////////////////////////////////////////////
+namespace Jvm{
 
 	const int ATTRIBUTE_CODE = 1;
 	const int ATTRIBUTE_CONSTANTVALUE = 2;
@@ -37,7 +31,7 @@ namespace ClassFile{
 		virtual int get_tag(){return 0;}
 	};
 
-	typedef shared_ptr<Attribute> sp_Attribute;
+	typedef boost::shared_ptr<Attribute> sp_Attribute;
 
 	struct ExceptionInfo{
 		int start_pc;
@@ -46,7 +40,7 @@ namespace ClassFile{
 		int catch_type;
 	};
 
-	typedef shared_ptr<char> sp_char;
+	typedef boost::shared_ptr<char> sp_char;
 
 	class CodeAttribute : public Attribute{
 	public:
@@ -54,8 +48,8 @@ namespace ClassFile{
 		int max_locals;
 		int code_length;
 		sp_char code;
-		vector<ExceptionInfo> exception_table;
-		vector<sp_Attribute> attributes;
+		std::vector<ExceptionInfo> exception_table;
+		std::vector<sp_Attribute> attributes;
 		
 		virtual int get_tag(){
 			return ATTRIBUTE_CODE;
@@ -80,7 +74,7 @@ namespace ClassFile{
 
 	class ExceptionsAttribute : public Attribute{
 	public:
-		vector<int> exception_indexes;
+		std::vector<int> exception_indexes;
 		virtual int get_tag(){
 			return ATTRIBUTE_EXCEPTIONS;
 		}
@@ -95,7 +89,7 @@ namespace ClassFile{
 
 	class InnerClassesAttribute : public Attribute{
 	public:
-		vector<InnerClassInfo> classes;
+		std::vector<InnerClassInfo> classes;
 		virtual int get_tag(){
 			return ATTRIBUTE_INNERCLASSES;
 		}
@@ -108,7 +102,7 @@ namespace ClassFile{
 
 	class LineNumberTableAttribute : public Attribute{
 	public:
-		vector<LineNumberInfo> line_number_table;
+		std::vector<LineNumberInfo> line_number_table;
 		virtual int get_tag(){
 			return ATTRIBUTE_LINENUMBERTABLE;
 		}
@@ -124,7 +118,7 @@ namespace ClassFile{
 
 	class LocalVariableTableAttribute : public Attribute{
 	public:
-		vector<LocalVariableInfo> local_variable_table;
+		std::vector<LocalVariableInfo> local_variable_table;
 		virtual int get_tag(){
 			return ATTRIBUTE_LOCALVARIABLETABLE;
 		}
@@ -144,6 +138,7 @@ namespace ClassFile{
 			return ATTRIBUTE_SYNTHETIC;
 		}
 	};
+
 }
 
 #endif

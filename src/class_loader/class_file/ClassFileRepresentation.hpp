@@ -1,19 +1,17 @@
-#ifndef CLASSFILE_CLASSFILEREPRESENTATION_H
-#define CLASSFILE_CLASSFILEREPRESENTATION_H
+#ifndef JVM_CLASSFILEREPRESENTATION_H
+#define JVM_CLASSFILEREPRESENTATION_H
 
 #include "ConstantPool.hpp"
-#include "Member.hpp"
+#include "ClassFileMember.hpp"
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-using std::vector;
-
-namespace ClassFile{
+namespace Jvm{
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// struct ClassFile::ClassFileRepresentation
+	// struct ClassFileRepresentation
 	// 
 	// describes the intermediate representation of the contents of a 
 	// java class file. it closely resembles the format of the class file itself
@@ -28,17 +26,17 @@ namespace ClassFile{
 	struct ClassFileRepresentation{
 		int minor_version;
 		int major_version;
-		vector<sp_ConstantPoolEntry> constant_pool;
+		std::vector<sp_ConstantPoolEntry> constant_pool;
 		int access_flags;
 		int this_class;
 		int super_class;
-		vector<int> interfaces;
-		vector<Member> fields;
-		vector<Member> methods;
-		vector<sp_Attribute> attributes;
+		std::vector<int> interfaces;
+		std::vector<ClassFileMember> fields;
+		std::vector<ClassFileMember> methods;
+		std::vector<sp_Attribute> attributes;
 	};
 
-	typedef shared_ptr<ClassFileRepresentation> sp_ClassFileRepresentation;
+	typedef boost::shared_ptr<ClassFileRepresentation> sp_ClassFileRepresentation;
 
 }
 

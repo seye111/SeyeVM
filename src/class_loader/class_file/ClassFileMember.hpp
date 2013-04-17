@@ -1,29 +1,27 @@
-#ifndef CLASSFILE_MEMBER_H
-#define CLASSFILE_MEMBER_H
+#ifndef JVM_CLASSFILEMEMBER_H
+#define JVM_CLASSFILEMEMBER_H
 
 #include "Attribute.hpp"
-#include "../internal/AccessControlled.hpp"
+#include "../AccessControlled.hpp"
 
 #include <vector>
 
-using std::vector;
-
-namespace ClassFile{
+namespace Jvm{
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// ClassFile::Member
+	// ClassFileMember
 	// 
 	// represents either a field or a method as seen in a java class file
 	//
 	////////////////////////////////////////////////////////////////////////////////
 
-	class Member{
+	class ClassFileMember{
 	public:
 		int access_flags;
 		int name_index;
 		int descriptor_index;
-		vector<sp_Attribute> attributes;
+		std::vector<sp_Attribute> attributes;
 	};
 
 }
