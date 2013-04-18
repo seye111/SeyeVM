@@ -47,7 +47,8 @@ namespace Jvm{
 			<< indent << jvm_class.name << " : " 
 			<< "expanding interfaces..." << endl;
 		for(int index = 0; index < cfr.interfaces.size(); index++){
-			int name_index = ((ConstantClass*)check_and_get(cfr.interfaces[index], CONSTANT_CLASS))->name_index;
+			int name_index = ((ConstantClass*)check_and_get(cfr.interfaces[index], 
+				CONSTANT_CLASS))->name_index;
 			string interface_name = get_string(name_index);
 			if(logger.is_debug()) logger.log_debug() 
 				<< indent << jvm_class.name << " : " 

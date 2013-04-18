@@ -13,11 +13,12 @@ using std::vector;
 
 namespace Jvm{
 
-	shared_ptr<ClassFileRepresentation> ClassFileParser::parse_from_buffer(ClassFileDataBuffer & buffer) throw (JvmException){
+	shared_ptr<ClassFileRepresentation> ClassFileParser::parse_from_buffer(ClassFileDataBuffer & buffer){
 		if(logger.is_debug()) logger.log_debug() << "parsing class file data..." << endl;
 		check_magic(buffer.get_u4()); 
 
-		shared_ptr<ClassFileRepresentation> cfrep_sptr = shared_ptr<ClassFileRepresentation>(new ClassFileRepresentation);
+		shared_ptr<ClassFileRepresentation> cfrep_sptr = 
+			shared_ptr<ClassFileRepresentation>(new ClassFileRepresentation);
 		ClassFileRepresentation & cfrep = *cfrep_sptr;
 
 		int minor = buffer.get_u2();
@@ -64,7 +65,8 @@ namespace Jvm{
 		}
 	}
 
-	void ClassFileParser::load_constant_pool(ClassFileDataBuffer & buffer, vector<sp_ConstantPoolEntry> & constant_pool) throw (JvmException){
+	void ClassFileParser::load_constant_pool(ClassFileDataBuffer & buffer, 
+				vector<sp_ConstantPoolEntry> & constant_pool){
 		
 		int count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << "constant pool count - " << count << endl;
@@ -143,7 +145,9 @@ namespace Jvm{
 		}
 	}
 
-	void ClassFileParser::parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
+	void ClassFileParser::parse_attributes(ClassFileDataBuffer & buffer, 
+				ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
+		
 		int attribute_count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << attribute_count << " attribute(s)" << endl;
 		for(int index = 0; index < attribute_count; index++){
