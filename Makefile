@@ -1,10 +1,10 @@
 export buildpath=build
 export CPLUS_INCLUDE_PATH=src
 
-build: jvm
+build: jvmbin
 
-jvm: $(buildpath)/static_make $(buildpath)/static.o
-	g++ -I /usr/local/boost $(buildpath)/static.o -o jvm
+jvmbin: $(buildpath)/static_make $(buildpath)/static.o
+	g++ -I /usr/local/boost $(buildpath)/static.o -o jvmbin
 
 .PHONY: $(buildpath)/static_make
 $(buildpath)/static_make : | $(buildpath)_folder
@@ -22,6 +22,6 @@ all: clean build
 .PHONY: clean
 clean:
 	rm -rf $(buildpath)
-	rm -f jvm
+	rm -f jvmbin
 	
 	
