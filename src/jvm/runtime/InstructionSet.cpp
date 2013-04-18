@@ -409,7 +409,7 @@ namespace Jvm{
 		{"ifnull", 2, i_ifnull},
 		{"ifnonnull", 2, i_ifnonnull},
 		{"goto_w", 4, i_goto_w},
-		{"jsr_w", 0, i_jsr_w},
+		{"jsr_w", 0, i_jsr_w}
 	};
 
 	InstructionSet::InstructionSet(){

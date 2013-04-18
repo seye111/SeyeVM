@@ -17,11 +17,8 @@ int main(int argc, char** argv) throw (JvmException){
 			Jvm::sp_ByteBufferSource(new Jvm::ClassPathByteBufferSource(classpath)));
 		class_loader.get_class(argv[2], 0);
 
-		Jvm::ExecutionContext context;
-		Jvm::Instruction instruction = runtime.instruction_set.instructions[0];
-		instruction.execute(context);
-
 		return 0;
+
 	}catch (JvmException & ex){
 		cout << "exception: " << ex.what() << endl;
 		return -1;
