@@ -147,7 +147,7 @@ namespace Jvm{
 
 	void ClassFileParser::parse_attributes(ClassFileDataBuffer & buffer, 
 				ClassFileRepresentation & cfrep, vector<sp_Attribute> & attributes){
-		
+
 		int attribute_count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << attribute_count << " attribute(s)" << endl;
 		for(int index = 0; index < attribute_count; index++){
@@ -249,7 +249,9 @@ namespace Jvm{
 		}
 	}
 
-	void ClassFileParser::parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, vector<ClassFileMember> & members){
+	void ClassFileParser::parse_members(ClassFileDataBuffer & buffer, 
+				ClassFileRepresentation & cfrep, vector<ClassFileMember> & members){
+		
 		int member_count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << "member_count " << member_count << endl;
 		for(int index = 0; index < member_count; index++){
