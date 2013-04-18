@@ -206,6 +206,8 @@ namespace Jvm{
 	void i_ifnonnull(ExecutionContext & context);
 	void i_goto_w(ExecutionContext & context);
 	void i_jsr_w(ExecutionContext & context);
+	void i_reserved(ExecutionContext & context);
+	void i_invalid_pc(ExecutionContext & context);
 
 	static Instruction instruction_list[] = {
 		{"nop", 0, 0, i_nop},
@@ -409,7 +411,9 @@ namespace Jvm{
 		{"ifnull", 198, 2, i_ifnull},
 		{"ifnonnull", 199, 2, i_ifnonnull},
 		{"goto_w", 200, 4, i_goto_w},
-		{"jsr_w", 201, 0, i_jsr_w}
+		{"jsr_w", 201, 0, i_jsr_w},
+		{"reserved", 202, 0, i_reserved},
+		{"invalid_pc", 203, 0, i_invalid_pc}
 };
 
 	InstructionSet::InstructionSet(){

@@ -4,6 +4,14 @@
 
 namespace Jvm{
 
+	void i_reserved(ExecutionContext & context){
+		throw JvmException("reserved opcode");
+	}
+	void i_invalid_pc(ExecutionContext & context){
+		throw JvmException("no instruction at pc");
+	}
+
+
 	void i_nop(ExecutionContext & context){
 		throw JvmIntsructionNotImplementedException("instruction not implemented - nop");
 	}
