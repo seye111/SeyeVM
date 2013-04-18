@@ -3,12 +3,13 @@
 
 #include "JvmMember.hpp"
 
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 
 namespace Jvm{
 
 	class JvmField : public JvmMember {
-
+	public:
+		int offset;
 	};
 
 	typedef boost::shared_ptr<JvmField> sp_JvmField;

@@ -67,6 +67,10 @@ namespace Jvm{
 		if(logger.is_debug()) logger.log_debug() 
 			<< indent << jvm_class.name << " : " << "===== fields..." << endl;
 		
+		int static_data_4_offset = 0;
+		int static_data_8_offset = 0;
+		int instance_data_4_offset = 0;
+		int instance_data_8_offset = 0;
 		for(int index=0; index < cfr.fields.size(); index++){
 			ClassFileMember & cf_field = cfr.fields[index];
 			sp_JvmField sp_jvm_field(new JvmField);
@@ -84,8 +88,57 @@ namespace Jvm{
 			}else{
 				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
 			}
+
+			int width = get_width(jvm_field.descriptor);
+			if(jvm_field.is_static()){
+				if(width == 4){
+					jvm_field.offset = static_data_4_offset;
+					++static_data_4_offset;
+				}else{
+					jvm_field.offset = static_data_8_offset;
+					++static_data_8_offset;
+				}
+			}else{
+				if(width == 4){
+					jvm_field.offset = instance_data_4_offset;
+					++instance_data_4_offset;
+				}else{
+					jvm_field.offset = instance_data_8_offset;
+					++instance_data_8_offset;
+				}
+			}
 		}
 
+		jvm_class.static_data_4 = new int[static_data_4_offset];
+		jvm_class.static_data_8 = new long[static_data_8_offset];
+		jvm_class.instance_data_4_count = instance_data_4_offset;
+		jvm_class.instance_data_8_count = instance_data_8_offset;
+
+		if(logger.is_debug()) logger.log_debug() 
+			<< indent << jvm_class.name << " : [" 
+			<< "static_data_4_count: " << static_data_4_offset << ", " 
+			<< "static_data_8_count: " << static_data_8_offset << ", " 
+			<< "instance_data_4_count: " << instance_data_4_offset << ", " 
+			<< "instance_data_8_count: " << instance_data_8_offset 
+			<< "] " << endl;
+	}
+
+	int Expander::get_width(string & descriptor){
+		int result = 0;
+		switch(descriptor[0]){
+			case 'F': case 'I': case 'S': case 'B': case 'C':
+				result = 4;
+				break;
+			case '[': case 'L': case 'J': case 'D':
+				result = 8;
+				break;
+			default:
+				throw JvmException("couldn't find the width of descriptor " + descriptor);
+		}
+		if(logger.is_trace()) logger.log_trace() 
+			<< indent << jvm_class.name << " : width of " 
+			<< descriptor << " is " << result << endl;
+		return result;
 	}
 
 	void Expander::expand_methods (){

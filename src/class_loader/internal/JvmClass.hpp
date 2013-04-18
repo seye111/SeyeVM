@@ -26,6 +26,16 @@ namespace Jvm{
 		int access_flags;
 		bool loading;
 		bool loaded;
+		int* static_data_4;
+		long* static_data_8;
+		int instance_data_4_count; 
+		int instance_data_8_count;
+
+		JvmClass() : static_data_4(NULL), static_data_8(NULL) {}
+		~JvmClass() {
+			delete[] static_data_4;
+			delete[] static_data_8;
+		}
 	};
 
 	typedef boost::shared_ptr<JvmClass> sp_JvmClass;

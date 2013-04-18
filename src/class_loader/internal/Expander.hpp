@@ -14,7 +14,7 @@ namespace Jvm{
 class ClassLoader;
 
 	class Expander{
-		// fields
+
 		ClassLoader & class_loader;
 		sp_ClassFileRepresentation sp_cfr;
 		ClassFileRepresentation & cfr;
@@ -24,7 +24,6 @@ class ClassLoader;
 		int depth;
 		std::string indent;
 
-		//methods
 		std::string & get_class_name();
 		std::string & get_super_class_name();
 		void expand_members();
@@ -33,6 +32,7 @@ class ClassLoader;
 		std::string & get_string(int index);
 		void expand_interfaces();
 		ConstantPoolEntry* check_and_get(int index, int tag);
+		int get_width(string & descriptor);
 	public:
 		Expander(ClassLoader & class_loader, sp_ClassFileRepresentation sp_cfr, sp_JvmClass sp_jvm_class, int depth) : 
 			class_loader(class_loader),

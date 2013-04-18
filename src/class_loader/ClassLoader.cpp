@@ -12,7 +12,7 @@ namespace Jvm{
 				<< " already loaded" << endl;
 		}else{
 			if(logger.is_info()) logger.log_info() << "class " << name
-				<< " not found - requesting load" << endl;
+				<< " not loaded - requesting load" << endl;
 			sp_jvm_class = load_class(name, depth);
 		}
 		return sp_jvm_class;
