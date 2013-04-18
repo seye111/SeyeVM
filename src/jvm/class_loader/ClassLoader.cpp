@@ -2,6 +2,8 @@
 
 #include "class_file/ClassFileParser.hpp"
 
+using std::endl;
+
 namespace Jvm{
 
 	sp_JvmClass ClassLoader::get_class(const std::string & name, int depth = 0){

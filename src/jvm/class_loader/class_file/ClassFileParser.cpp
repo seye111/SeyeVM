@@ -251,7 +251,7 @@ namespace Jvm{
 
 	void ClassFileParser::parse_members(ClassFileDataBuffer & buffer, 
 				ClassFileRepresentation & cfrep, vector<ClassFileMember> & members){
-		
+
 		int member_count = buffer.get_u2();
 		if(logger.is_trace()) logger.log_trace() << "member_count " << member_count << endl;
 		for(int index = 0; index < member_count; index++){
@@ -260,7 +260,6 @@ namespace Jvm{
 			member.access_flags = buffer.get_u2();
 			member.name_index = buffer.get_u2();
 			member.descriptor_index = buffer.get_u2();
-			// todo - remove
 			string name = ((ConstantUtf8*)cfrep.constant_pool[member.name_index].get())->str;
 			string descriptor = ((ConstantUtf8*)cfrep.constant_pool[member.descriptor_index].get())->str;
 			if(logger.is_trace()) logger.log_trace() << name << " : " << descriptor << endl;

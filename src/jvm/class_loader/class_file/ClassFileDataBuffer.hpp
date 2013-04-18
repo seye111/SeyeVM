@@ -3,7 +3,7 @@
 
 #include "../ByteBuffer.hpp"
 
-#include "../../util/util.hpp"
+#include "../../Exception.hpp"
 
 #include <string>
 #include <boost/shared_ptr.hpp>

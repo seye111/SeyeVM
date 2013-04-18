@@ -3,7 +3,7 @@
 
 #include "ByteBufferSource.hpp"
 
-#include "../util/util.hpp"
+#include "../Exception.hpp"
 
 namespace Jvm{
 

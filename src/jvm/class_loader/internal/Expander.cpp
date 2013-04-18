@@ -3,6 +3,7 @@
 #include <sstream>
 
 using std::ostringstream;
+using std::endl;
 
 namespace Jvm{
 
@@ -127,7 +128,7 @@ namespace Jvm{
 	int Expander::get_width(string & descriptor){
 		int result = 0;
 		switch(descriptor[0]){
-			case 'F': case 'I': case 'S': case 'B': case 'C':
+			case 'F': case 'I': case 'S': case 'B': case 'C': case 'Z':
 				result = 4;
 				break;
 			case '[': case 'L': case 'J': case 'D':

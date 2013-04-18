@@ -1,7 +1,7 @@
 #ifndef JVM_CLASSFILEPARSER_H
 #define JVM_CLASSFILEPARSER_H
 
-#include "../../util/util.hpp"
+#include "../../Exception.hpp"
 #include "ClassFileRepresentation.hpp"
 #include "ClassFileDataBuffer.hpp"
 

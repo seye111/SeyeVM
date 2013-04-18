@@ -6,7 +6,7 @@
 #include "../ClassLoader.hpp"
 
 #include "../class_file/ClassFileRepresentation.hpp"
-#include "../../util/util.hpp"
+#include "../../Exception.hpp"
 
 
 namespace Jvm{

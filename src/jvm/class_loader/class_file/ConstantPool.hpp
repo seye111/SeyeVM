@@ -59,7 +59,7 @@ namespace Jvm{
 		std::string str;
 		ConstantUtf8(const std::string & str) : str(str) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_Utf8 initialized with \"" << str << "\"  " << endl;
+				<< "CONSTANT_Utf8 initialized with \"" << str << "\"  " << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_UTF8;}
 	};
@@ -69,7 +69,7 @@ namespace Jvm{
 		int val;
 		ConstantInteger(int val) : val(val) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_Integer initialized with " << val << endl;
+				<< "CONSTANT_Integer initialized with " << val << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_INTEGER;}
 	};
@@ -79,7 +79,7 @@ namespace Jvm{
 		float val;
 		ConstantFloat(float val) : val(val) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_Float initialized with " << val << endl;
+				<< "CONSTANT_Float initialized with " << val << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_FLOAT;}
 	};
@@ -89,7 +89,7 @@ namespace Jvm{
 		long val;
 		ConstantLong(long val) : val(val) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_Long initialized with " << val << endl;
+				<< "CONSTANT_Long initialized with " << val << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_LONG;}
 	};
@@ -99,7 +99,7 @@ namespace Jvm{
 		double val;
 		ConstantDouble(double val) : val(val) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_Double initialized with " << val << endl;
+				<< "CONSTANT_Double initialized with " << val << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_DOUBLE;}
 	};
@@ -109,7 +109,7 @@ namespace Jvm{
 		int name_index;
 		ConstantClass(int name_index) : name_index(name_index) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_Class initialized with " <<  name_index << endl;
+				<< "CONSTANT_Class initialized with " <<  name_index << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_CLASS;}
 	};
@@ -119,7 +119,7 @@ namespace Jvm{
 		int string_index;
 		ConstantString(int string_index) : string_index(string_index) {
 			if(logger.is_trace()) logger.log_trace()
-				<< "CONSTANT_String initialized with " <<  string_index << endl;
+				<< "CONSTANT_String initialized with " <<  string_index << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_STRING;}
 	};
@@ -132,7 +132,7 @@ namespace Jvm{
 			: class_index(class_index), name_and_type_index(name_and_type_index) {
 			if(logger.is_trace()) logger.log_trace()
 				<< "CONSTANT_Fieldref initialized with " <<  class_index << ", " 
-				<< name_and_type_index << endl;
+				<< name_and_type_index << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_FIELDREF;}
 	};
@@ -145,7 +145,7 @@ namespace Jvm{
 			: class_index(class_index), name_and_type_index(name_and_type_index) {
 			if(logger.is_trace()) logger.log_trace()
 				<< "CONSTANT_Methodref initialized with " <<  class_index << ", " 
-				<< name_and_type_index << endl;
+				<< name_and_type_index << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_METHODREF;}
 	};
@@ -158,7 +158,7 @@ namespace Jvm{
 			: class_index(class_index), name_and_type_index(name_and_type_index) {
 			if(logger.is_trace()) logger.log_trace()
 				<< "CONSTANT_InterfaceMethodref initialized with " <<  class_index << ", " 
-				<< name_and_type_index << endl;
+				<< name_and_type_index << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_INTERFACEMETHODREF;}
 	};
@@ -171,7 +171,7 @@ namespace Jvm{
 			: name_index(name_index), descriptor_index(descriptor_index) {
 			if(logger.is_trace()) logger.log_trace()
 				<< "CONSTANT_NameAndType initialized with " <<  name_index << ", " 
-				<< descriptor_index << endl;
+				<< descriptor_index << std::endl;
 		}
 		virtual int get_tag(){return CONSTANT_NAMEANDTYPE;}
 	};

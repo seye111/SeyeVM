@@ -3,10 +3,6 @@
 
 #include <iostream>
 
-using std::ostream;
-using std::cout;
-using std::endl;
-
 const int LOG_LEVEL_TRACE = 0;
 const int LOG_LEVEL_DEBUG = 1;
 const int LOG_LEVEL_INFO = 2;
@@ -16,7 +12,7 @@ const int LOG_LEVEL_FATAL = 5;
 
 extern int LOG_LEVEL;
 
-static ostream & os = cout;
+static std::ostream & os = std::cout;
 
 class Logger {
 
@@ -26,27 +22,27 @@ public:
 
 	Logger() : level(LOG_LEVEL){}
 
-	ostream & log_trace(){
+	std::ostream & log_trace(){
 		return os << "TRACE - ";
 	}
 
-	ostream & log_debug(){
+	std::ostream & log_debug(){
 		return os << "DEBUG - ";
 	}
 
-	ostream & log_info(){
+	std::ostream & log_info(){
 		return os << "INFO  - ";
 	}
 
-	ostream & log_warn(){
+	std::ostream & log_warn(){
 		return os << "WARN  - ";
 	}
 
-	ostream & log_fatal(){
+	std::ostream & log_fatal(){
 		return os << "FATAL - ";
 	}
 
-	ostream & log_error(){
+	std::ostream & log_error(){
 		return os << "ERROR - ";
 	}
 
