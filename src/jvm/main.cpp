@@ -14,7 +14,9 @@ int main(int argc, char** argv) throw (JvmException){
 		Jvm::Runtime runtime;
 		string classpath(argv[1]);
 		Jvm::ClassLoader class_loader(
-			Jvm::sp_ByteBufferSource(new Jvm::ClassPathByteBufferSource(classpath)));
+			Jvm::sp_ByteBufferSource(new Jvm::ClassPathByteBufferSource(classpath)),
+			Jvm::sp_Runtime(new Jvm::Runtime)
+		);
 		class_loader.get_class(argv[2], 0);
 
 		return 0;

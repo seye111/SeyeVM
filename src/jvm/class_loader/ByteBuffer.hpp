@@ -10,7 +10,7 @@ namespace Jvm{
 		int size;
 		char* data;
 		ByteBuffer(int size) : size(size), data(new char[size]) {}
-		~ByteBuffer(){delete data;}
+		~ByteBuffer(){delete[] data;}
 	};
 
 	typedef boost::shared_ptr<ByteBuffer> sp_ByteBuffer;

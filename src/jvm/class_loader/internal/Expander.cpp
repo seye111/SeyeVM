@@ -1,5 +1,7 @@
 #include "Expander.hpp"
 
+#include "../../runtime/InstructionSet.hpp"
+
 #include <sstream>
 
 using std::ostringstream;
@@ -109,7 +111,9 @@ namespace Jvm{
 					++instance_data_8_offset;
 				}
 			}
+
 		}
+
 
 		jvm_class.static_data_4 = new int[static_data_4_offset];
 		jvm_class.static_data_8 = new long[static_data_8_offset];
@@ -161,10 +165,53 @@ namespace Jvm{
 				<< indent << jvm_class.name << " : [" << jvm_method.get_access_string() << "] " 
 				<< jvm_method.name << " : " 
 				<< jvm_method.descriptor << endl;
+
+
+			expand_method_attributes(cf_method, jvm_method);
+
+
 			if(jvm_method.is_static()){
 				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
 			}else{
 				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
+			}
+
+		}
+	}
+
+	void Expander::expand_method_attributes(ClassFileMember & cf_method, JvmMethod & jvm_method){
+		for(int i=0; i < cf_method.attributes.size(); i++){
+			Attribute* attribute = cf_method.attributes[i].get();
+			switch(attribute->get_tag()){
+				case ATTRIBUTE_CODE:
+					if(logger.is_debug()) logger.log_debug() 
+						<< indent << jvm_class.name << " : expanding code" << endl;  
+					CodeAttribute *p_attr = (CodeAttribute*)attribute;
+					jvm_method.max_stack = p_attr->max_stack;
+					jvm_method.max_locals = p_attr->max_locals;
+					jvm_method.code_length = p_attr->code_length;
+					if(logger.is_debug()) logger.log_debug() 
+						<< indent << jvm_class.name << " : code length - " 
+						<< jvm_method.code_length << endl;
+					jvm_method.instructions = new Instruction*[p_attr->code_length];
+					Instruction* instructions = class_loader.sp_runtime->instruction_set.instructions;
+					jvm_method.code = p_attr->code;
+					char* code_bytes = p_attr->code->data;
+ 					for(int ci = 0; ci < jvm_method.code_length; ci++){
+						Instruction* instruction = &instructions[255 & code_bytes[ci]];
+						if(logger.is_debug()) logger.log_debug() 
+							<< indent << jvm_class.name << " : [" << ci << "]  "
+							<< instruction->opcode << " - " <<instruction->name  << " (" 
+							<< instruction->arg_count << ")" << endl;
+						jvm_method.instructions[ci] = instruction;
+						if(instruction->arg_count > 4){
+							throw JvmException("can't parse instruction " + instruction->name);
+						}
+						for(int bi = 0; bi < instruction->arg_count; bi++){
+							jvm_method.instructions[ci++] = &instructions[203];
+						}
+					}
+					break;
 			}
 		}
 	}

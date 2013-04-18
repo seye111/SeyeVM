@@ -160,9 +160,11 @@ namespace Jvm{
 				attr.max_stack = buffer.get_u2();
 				attr.max_locals = buffer.get_u2();
 				attr.code_length = buffer.get_u4();
-				attr.code = sp_char(new char[attr.code_length]);
-				for(int i=0; i < attr.code_length; i++){
-					attr.code.get()[i] = buffer.get_byte();
+				if(attr.code_length > 0){
+					attr.code = sp_ByteBuffer(new ByteBuffer(attr.code_length));
+					for(int i=0; i < attr.code_length; i++){
+						attr.code->data[i] = buffer.get_byte();
+					}
 				}
 				int exception_table_length = buffer.get_u2();
 				for(int i=0; i < exception_table_length; i++){

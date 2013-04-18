@@ -1,6 +1,8 @@
 #ifndef JVM_ATTRIBUTE
 #define JVM_ATTRIBUTE
 
+#include "../ByteBuffer.hpp"
+
 #include <iostream>
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -47,7 +49,7 @@ namespace Jvm{
 		int max_stack;
 		int max_locals;
 		int code_length;
-		sp_char code;
+		sp_ByteBuffer code;
 		std::vector<ExceptionInfo> exception_table;
 		std::vector<sp_Attribute> attributes;
 		

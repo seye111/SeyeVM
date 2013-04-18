@@ -5,6 +5,8 @@
 
 #include "../util/log.hpp"
 
+#include <boost/shared_ptr.hpp>
+
 namespace Jvm{
 
 	class Runtime{
@@ -15,6 +17,8 @@ namespace Jvm{
 			if(logger.is_debug()) logger.log_debug() << "runtime created" << std::endl;
 		}
 	};
+
+	typedef boost::shared_ptr<Runtime> sp_Runtime;
 
 }
 

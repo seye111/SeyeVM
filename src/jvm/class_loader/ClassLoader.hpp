@@ -9,6 +9,8 @@
 #include "class_file/ClassFileDataBuffer.hpp"
 #include "class_file/ClassFileRepresentation.hpp"
 
+#include "../runtime/Runtime.hpp"
+
 #include "../Exception.hpp"
 
 namespace Jvm{
@@ -18,13 +20,15 @@ namespace Jvm{
 	class ClassLoader{
 		
 		sp_ByteBufferSource sp_byte_buffer_source;
-
 		sp_JvmClass load_class(const std::string & name, int depth);
-
-	public:
 		std::map <string, sp_JvmClass> classes;
 
-		ClassLoader(sp_ByteBufferSource sp_byte_buffer_source) : sp_byte_buffer_source(sp_byte_buffer_source) {}
+	public:
+		sp_Runtime sp_runtime;
+
+		ClassLoader(sp_ByteBufferSource sp_byte_buffer_source, sp_Runtime sp_runtime) : 
+				sp_byte_buffer_source(sp_byte_buffer_source),
+				sp_runtime(sp_runtime) {}
 
 		sp_JvmClass get_class(const std::string & name, int depth);
 

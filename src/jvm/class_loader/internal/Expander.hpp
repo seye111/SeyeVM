@@ -33,8 +33,10 @@ class ClassLoader;
 		void expand_interfaces();
 		ConstantPoolEntry* check_and_get(int index, int tag);
 		int get_width(string & descriptor);
+		void expand_method_attributes(ClassFileMember & cf_method, JvmMethod & jvm_method);
 	public:
-		Expander(ClassLoader & class_loader, sp_ClassFileRepresentation sp_cfr, sp_JvmClass sp_jvm_class, int depth) : 
+		Expander(ClassLoader & class_loader, sp_ClassFileRepresentation sp_cfr, 
+			sp_JvmClass sp_jvm_class, int depth) : 
 			class_loader(class_loader),
 			sp_cfr(sp_cfr),
 			cfr(*sp_cfr),

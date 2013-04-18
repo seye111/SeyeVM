@@ -414,7 +414,7 @@ namespace Jvm{
 		{"jsr_w", 201, 0, i_jsr_w},
 		{"reserved", 202, 0, i_reserved},
 		{"invalid_pc", 203, 0, i_invalid_pc}
-};
+	};
 
 	InstructionSet::InstructionSet(){
 		if(logger.is_debug()) logger.log_debug() << "creating instruction set" << std::endl;
