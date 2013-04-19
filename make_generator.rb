@@ -14,7 +14,7 @@ class MakeBuilder
 		makefile << "\t@echo '====>changed' $?\n"
 		makefile << "\tld -r"
 		@directories.each{| dir | makefile << " #{build_root}/#{dir[:trunc]}_dir.o" }
-		makefile << " -o #{build_target}\n"
+		makefile << " -o #{build_target} \n"
 		sourcefiles = {}
 		@directories.each do | dir |
 			makefile << "\n#{build_root}/#{dir[:trunc]}_dir.o:"
@@ -33,7 +33,7 @@ class MakeBuilder
 				dep[:dependencies].each{|ddep| makefile << " #{ddep}"}
 				makefile << " | #{build_root}/#{dir[:trunc]}\n"
 				makefile << "\t@echo '====>changed' $?\n"
-				makefile << "\tg++ -c #{dep[:name]} -o #{build_root}/#{dep[:object]}\n"
+				makefile << "\tg++ -c #{dep[:name]} -o #{build_root}/#{dep[:object]} -pg\n"
 			end
 		end
 		File.open(makefile_name, 'w'){|f| f.puts makefile}

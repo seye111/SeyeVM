@@ -4,7 +4,7 @@ export CPLUS_INCLUDE_PATH=src
 build: jvmbin
 
 jvmbin: $(buildpath)/static_make $(buildpath)/static.o
-	g++ -I /usr/local/boost $(buildpath)/static.o -o jvmbin
+	g++ -pg -I /usr/local/boost $(buildpath)/static.o -o jvmbin
 
 .PHONY: $(buildpath)/static_make
 $(buildpath)/static_make : | $(buildpath)_folder
@@ -14,7 +14,6 @@ $(buildpath)/static_make : | $(buildpath)_folder
 
 .PHONY: $(buildpath)_folder
 $(buildpath)_folder:
-	echo "hi"
 	mkdir -p $(buildpath)
 	
 all: clean build
