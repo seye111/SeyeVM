@@ -30,6 +30,8 @@ namespace Jvm{
 
 		class ClassFileDataBuffer {
 		sp_ByteBuffer sp_byte_buffer;
+		char* data;
+		int size;
 		int pos;
 		long get_n(int n);
 

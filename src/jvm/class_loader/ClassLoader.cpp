@@ -27,7 +27,7 @@ namespace Jvm{
 		}
 		ClassFileDataBuffer cfdb(sp_byte_buffer);
 		sp_ClassFileRepresentation sp_cfr = ClassFileParser::parse_from_buffer(cfdb);
-		sp_JvmClass sp_jvm_class(new JvmClass); 
+		sp_JvmClass sp_jvm_class(new JvmClass(sp_cfr)); 
 		classes[name] = sp_jvm_class;
 		sp_jvm_class->loading = true;
 		sp_jvm_class->loaded = false;

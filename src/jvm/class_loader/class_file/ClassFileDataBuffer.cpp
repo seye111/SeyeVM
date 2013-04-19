@@ -13,7 +13,9 @@ using std::ios;
 namespace Jvm{
 
 	ClassFileDataBuffer::ClassFileDataBuffer(sp_ByteBuffer sp_byte_buffer) : 
-		sp_byte_buffer(sp_byte_buffer),
+		sp_byte_buffer(sp_byte_buffer), 
+		data(sp_byte_buffer->data),
+		size(sp_byte_buffer->size),
 		pos(0){}
 
 	ClassFileDataBuffer::~ClassFileDataBuffer() {}
@@ -70,10 +72,10 @@ namespace Jvm{
 	}
 
 	char ClassFileDataBuffer::get_byte(){
-		if (pos >= sp_byte_buffer->size){
+		if (pos >= size){
 			throw JvmException("attempt to read beyond buffer");
 		}
-		return sp_byte_buffer->data[pos++];
+		return data[pos++];
 	}
 
 	string ClassFileDataBuffer::get_string(){

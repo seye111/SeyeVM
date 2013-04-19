@@ -4,6 +4,9 @@
 
 #include <sstream>
 
+using std::vector;
+using std::map;
+
 using std::ostringstream;
 using std::endl;
 
@@ -77,7 +80,7 @@ namespace Jvm{
 		int instance_data_8_offset = 0;
 		for(int index=0; index < cfr.fields.size(); index++){
 			ClassFileMember & cf_field = cfr.fields[index];
-			sp_JvmField sp_jvm_field(new JvmField);
+			sp_JvmField sp_jvm_field(new JvmField(sp_jvm_class));
 			JvmField & jvm_field = *sp_jvm_field;
 			
 			jvm_field.name = get_string(cf_field.name_index);
@@ -88,9 +91,11 @@ namespace Jvm{
 				<< jvm_field.name << " : " 
 				<< jvm_field.descriptor << endl;
 			if(jvm_field.is_static()){
-				sp_jvm_class->static_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
+				sp_jvm_class->static_fields.insert(
+					f_map_entry(jvm_field.descriptor + "0" + jvm_field.name, sp_jvm_field));
 			}else{
-				sp_jvm_class->instance_fields.insert(f_map_entry(jvm_field.name, sp_jvm_field));
+				sp_jvm_class->instance_fields.insert(
+					f_map_entry(jvm_field.descriptor + "0" + jvm_field.name, sp_jvm_field));
 			}
 
 			int width = get_width(jvm_field.descriptor);
@@ -113,7 +118,6 @@ namespace Jvm{
 			}
 
 		}
-
 
 		jvm_class.static_data_4 = new int[static_data_4_offset];
 		jvm_class.static_data_8 = new long[static_data_8_offset];
@@ -150,10 +154,34 @@ namespace Jvm{
 	void Expander::expand_methods (){
 		if(logger.is_debug()) logger.log_debug() 
 			<< indent << jvm_class.name << " : " << "===== methods..." << endl;
+		if(logger.is_debug()) logger.log_debug() 
+			<< indent << jvm_class.name << " : "
+			"loading v_table from superclass (if any)" << endl;
+		if(jvm_class.super_class.get()){
+			vector<sp_JvmMethod> super_v_table = jvm_class.super_class->v_table;
+			for(int i=0; i < super_v_table.size(); i++){
+				sp_JvmMethod pjm = super_v_table[i];
+				jvm_class.v_table.push_back(pjm);
+				if(logger.is_debug()) logger.log_debug() 
+					<< indent << jvm_class.name << " : "
+					<< "---> " << pjm->name << " : " << pjm->descriptor << endl;
+			}
+		}else{
+			if(logger.is_debug()) logger.log_debug() 
+				<< indent << jvm_class.name << " : "
+				"no superclass" << endl;
+
+		}
+
+		if(logger.is_debug()) logger.log_debug() 
+			<< indent << jvm_class.name << " : "
+			"parsing methods defined in this class " << endl;
+
+
 
 		for(int index=0; index < cfr.methods.size(); index++){
 			ClassFileMember & cf_method = cfr.methods[index];
-			sp_JvmMethod sp_jvm_method(new JvmMethod);
+			sp_JvmMethod sp_jvm_method(new JvmMethod(sp_jvm_class));
 			JvmMethod & jvm_method = *sp_jvm_method;
 			
 			jvm_method.name = get_string(cf_method.name_index);
@@ -167,15 +195,46 @@ namespace Jvm{
 				<< jvm_method.descriptor << endl;
 
 
-			expand_method_attributes(cf_method, jvm_method);
 
 
 			if(jvm_method.is_static()){
-				sp_jvm_class->static_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
+				sp_jvm_class->static_methods.insert(
+					m_map_entry(jvm_method.descriptor + "0" + jvm_method.name, sp_jvm_method));
 			}else{
-				sp_jvm_class->instance_methods.insert(m_map_entry(jvm_method.name, sp_jvm_method));
+				string key = jvm_method.descriptor + "0" + jvm_method.name; 
+				sp_jvm_class->instance_methods.insert(
+					m_map_entry(key, sp_jvm_method));
+				if(jvm_class.super_class.get()){
+					// check to see if this method is in the superclasses v_table
+					map<string, sp_JvmMethod> scim = jvm_class.super_class->instance_methods;
+					map<string, sp_JvmMethod>::iterator it = scim.find(key);
+					if(it != scim.end()){
+						if(logger.is_debug()) logger.log_debug() 
+							<< indent << jvm_class.name << " : "
+							<< "overrides superclass method " << endl;
+						int v_table_index = it->second->v_table_index;
+						jvm_class.v_table[v_table_index] = sp_jvm_method;
+						jvm_method.v_table_index = v_table_index;
+					}else{
+						if(logger.is_debug()) logger.log_debug() 
+							<< indent << jvm_class.name << " : "
+							<< "doesn't override superclass method " << endl;
+						jvm_method.v_table_index = jvm_class.v_table.size();
+						jvm_class.v_table.push_back(sp_jvm_method);
+					}
+				}else{
+					if(logger.is_debug()) logger.log_debug() 
+						<< indent << jvm_class.name << " : "
+						<< "doesn't override superclass method " << endl;
+					jvm_method.v_table_index = jvm_class.v_table.size();
+					jvm_class.v_table.push_back(sp_jvm_method);
+				}
+				if(logger.is_debug()) logger.log_debug() 
+					<< indent << jvm_class.name << " : "
+					<< "v_table_index is " << jvm_method.v_table_index << endl;
 			}
 
+			expand_method_attributes(cf_method, jvm_method);
 		}
 	}
 
