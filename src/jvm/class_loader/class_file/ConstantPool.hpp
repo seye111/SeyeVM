@@ -5,7 +5,8 @@
 
 #include <iostream>
 #include <string>
-#include <boost/shared_ptr.hpp>
+
+using std::endl;
 
 namespace Jvm{
 
@@ -50,9 +51,11 @@ namespace Jvm{
 	class ConstantPoolEntry{
 	public:
 		virtual int get_tag(){return 0;}
+		virtual ~ConstantPoolEntry(){
+			if(logger.is_trace()) logger.log_trace() 
+				<< "ConstantPoolEntry " << " destructor called (delete_me) " << endl;
+		}
 	};
-
-	typedef boost::shared_ptr<ConstantPoolEntry> sp_ConstantPoolEntry;
 
 	class ConstantUtf8 : public ConstantPoolEntry{
 	public:

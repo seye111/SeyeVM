@@ -1,5 +1,5 @@
-#ifndef CLASSLOADER
-#define CLASSLOADER
+#ifndef JVM_CLASSLOADER_H
+#define JVM_CLASSLOADER_H
 
 #include "ByteBufferSource.hpp"
 
@@ -15,28 +15,22 @@
 
 namespace Jvm{
 
+	class Jvm;
 	class Expander;
 
 	class ClassLoader{
 		
-		sp_ByteBufferSource sp_byte_buffer_source;
-		sp_JvmClass load_class(const std::string & name, int depth);
-		std::map <string, sp_JvmClass> classes;
+		JvmClass & load_class(const std::string & name, int depth);
+		std::map <std::string, JvmClass* > classes;
 
 	public:
-		sp_Runtime sp_runtime;
+		Jvm & jvm;
+		ByteBufferSource & byte_buffer_source;
 
-		ClassLoader(sp_ByteBufferSource sp_byte_buffer_source, sp_Runtime sp_runtime) : 
-				sp_byte_buffer_source(sp_byte_buffer_source),
-				sp_runtime(sp_runtime) {}
-
-		sp_JvmClass get_class(const std::string & name, int depth);
-
-
+		ClassLoader(Jvm & jvm, ByteBufferSource & byte_buffer_source);
+		~ClassLoader();
+		JvmClass & get_class(const std::string & name, int depth);
 	};
-
-	typedef boost::shared_ptr<ClassLoader> sp_ClassLoader;
-
 }
 
 #endif

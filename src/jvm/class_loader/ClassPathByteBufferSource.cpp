@@ -24,23 +24,31 @@ namespace Jvm{
 		}
 	}
 
+	ClassPathByteBufferSource::~ClassPathByteBufferSource(){
+		if(logger.is_trace()) logger.log_trace() << "ClassPathByteBufferSource destructor called (delete_me) " << endl;
+		for(int i=0; i < sources.size(); i++){
+			delete sources[i];
+		}
+		if(logger.is_trace()) logger.log_trace() << "ClassPathByteBufferSource destructor finished (delete_me) " << endl;
+	}
+
 	void ClassPathByteBufferSource::add_source(string class_path_entry){
 		if(class_path_entry == "") return;
 		if(class_path_entry.length() > 5){
 			string extension = class_path_entry.substr(class_path_entry.length()-3,3);
 			if (extension == "jar" || extension == "zip"){
-				sources.push_back(sp_ByteBufferSource(new JarByteBufferSource(class_path_entry)));
+				sources.push_back(new JarByteBufferSource(class_path_entry));
 				return;
 			}
 		}
-		sources.push_back(sp_ByteBufferSource(new SingleFileByteBufferSource(class_path_entry)));
+		sources.push_back(new SingleFileByteBufferSource(class_path_entry));
 	}
 
-	sp_ByteBuffer ClassPathByteBufferSource::get_bytes(string name){
-		sp_ByteBuffer result;
+	ByteBuffer* ClassPathByteBufferSource::get_bytes(string name){
+		ByteBuffer* result;
 		for(int i=0; i < sources.size(); i++){
 			result = sources[i]->get_bytes(name);
-			if(result.get()){
+			if(result){
 				return result;
 			}
 		}

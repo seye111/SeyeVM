@@ -3,19 +3,23 @@
 
 #include "JvmMember.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include "../../util/shared_ptr.hpp"
 
 namespace Jvm{
 
 	class JvmField : public JvmMember {
 	public:
+
+		JvmField(JvmClass & jvm_class, ClassFileMember & class_file_member) : 
+			JvmMember(jvm_class, class_file_member) {}
+
+
+		virtual ~JvmField(){
+			if(logger.is_trace()) logger.log_trace() << "JvmField destructor called (delete_me) " << endl;
+		}
+		
 		int offset;
-	
-		JvmField(sp_JvmClass sp_jvm_class) : JvmMember(sp_jvm_class) {}
-
 	};
-
-	typedef boost::shared_ptr<JvmField> sp_JvmField;
 
 }
 #endif

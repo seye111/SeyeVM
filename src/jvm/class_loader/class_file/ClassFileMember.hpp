@@ -21,9 +21,16 @@ namespace Jvm{
 		int access_flags;
 		int name_index;
 		int descriptor_index;
-		std::vector<sp_Attribute> attributes;
-	};
+		std::vector<Attribute*> attributes;
 
+		virtual ~ClassFileMember(){
+			if(logger.is_trace()) logger.log_trace() 
+				<< "ClassFileMember " << " destructor called (delete_me) " << endl;
+			for(int i=0; i < attributes.size(); i++){
+				delete attributes[i];
+			}
+		}
+	};
 }
 
 #endif

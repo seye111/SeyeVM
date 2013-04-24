@@ -5,13 +5,12 @@
 #include "ClassFileMember.hpp"
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
 namespace Jvm{
 
 	////////////////////////////////////////////////////////////////////////////////
 	//
-	// struct ClassFileRepresentation
+	// class ClassFileRepresentation
 	// 
 	// describes the intermediate representation of the contents of a 
 	// java class file. it closely resembles the format of the class file itself
@@ -23,20 +22,23 @@ namespace Jvm{
 	//
 	////////////////////////////////////////////////////////////////////////////////
 
-	struct ClassFileRepresentation{
+	class ClassFileRepresentation{
+	public:
 		int minor_version;
 		int major_version;
-		std::vector<sp_ConstantPoolEntry> constant_pool;
+		std::vector<ConstantPoolEntry*> constant_pool;
 		int access_flags;
 		int this_class;
 		int super_class;
 		std::vector<int> interfaces;
-		std::vector<ClassFileMember> fields;
-		std::vector<ClassFileMember> methods;
-		std::vector<sp_Attribute> attributes;
-	};
+		std::vector<ClassFileMember*> fields;
+		std::vector<ClassFileMember*> methods;
+		std::vector<Attribute*> attributes;
+	
+		ClassFileRepresentation();
 
-	typedef boost::shared_ptr<ClassFileRepresentation> sp_ClassFileRepresentation;
+		~ClassFileRepresentation();
+	};
 
 }
 

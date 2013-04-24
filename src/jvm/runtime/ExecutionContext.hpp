@@ -3,7 +3,19 @@
 
 namespace Jvm{
 
-	class ExecutionContext{};
+	class Thread{
+
+	};
+
+	class StackFrame{
+		char* op_stack;
+		int op_stack_index;
+		int* locals;
+	};
+
+	class ExecutionContext{
+	public:
+	};
 
 }
 

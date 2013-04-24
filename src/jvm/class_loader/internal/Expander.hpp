@@ -16,11 +16,9 @@ class ClassLoader;
 	class Expander{
 
 		ClassLoader & class_loader;
-		sp_ClassFileRepresentation sp_cfr;
-		ClassFileRepresentation & cfr;
-		sp_JvmClass sp_jvm_class;
+		ClassFileRepresentation & class_file_representation;
 		JvmClass & jvm_class;
-		std::vector<sp_ConstantPoolEntry> & cp;
+		std::vector<ConstantPoolEntry*> & constant_pool;
 		int depth;
 		std::string indent;
 
@@ -32,24 +30,21 @@ class ClassLoader;
 		std::string & get_string(int index);
 		void expand_interfaces();
 		ConstantPoolEntry* check_and_get(int index, int tag);
-		int get_width(string & descriptor);
+		int get_width(std::string & descriptor);
 		void expand_method_attributes(ClassFileMember & cf_method, JvmMethod & jvm_method);
 	public:
-		Expander(ClassLoader & class_loader, sp_ClassFileRepresentation sp_cfr, 
-			sp_JvmClass sp_jvm_class, int depth) : 
-			class_loader(class_loader),
-			sp_cfr(sp_cfr),
-			cfr(*sp_cfr),
-			sp_jvm_class(sp_jvm_class),
-			jvm_class(*sp_jvm_class),
-			cp(cfr.constant_pool),
-			depth(depth)
-			{
+		Expander(ClassLoader & class_loader, ClassFileRepresentation & class_file_representation, 
+			JvmClass & jvm_class, int depth) : 
+				class_loader(class_loader),
+				class_file_representation(class_file_representation),
+				jvm_class(jvm_class),
+				constant_pool(class_file_representation.constant_pool),
+				depth(depth){
 				for(int i=0; i<depth; i++)
 					indent.append("    ");
 			} 
 		
-		void expand_class_representation(const string & name);
+		void expand_class_representation(const std::string & name);
 	};
 
 

@@ -12,13 +12,16 @@ using std::ios;
 
 namespace Jvm{
 
-	ClassFileDataBuffer::ClassFileDataBuffer(sp_ByteBuffer sp_byte_buffer) : 
-		sp_byte_buffer(sp_byte_buffer), 
-		data(sp_byte_buffer->data),
-		size(sp_byte_buffer->size),
+	ClassFileDataBuffer::ClassFileDataBuffer(ByteBuffer* p_byte_buffer) : 
+		p_byte_buffer(p_byte_buffer),
+		data(p_byte_buffer->data),
+		size(p_byte_buffer->size),
 		pos(0){}
 
-	ClassFileDataBuffer::~ClassFileDataBuffer() {}
+	ClassFileDataBuffer::~ClassFileDataBuffer() {
+		if(logger.is_trace()) logger.log_trace() << "ClassFileDataBuffer destructor called (delete_me) " << endl;
+		delete p_byte_buffer;
+	}
 
 	long ClassFileDataBuffer::get_n(int n) {
 		long result = 0;

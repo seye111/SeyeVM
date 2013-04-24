@@ -9,7 +9,10 @@ using std::string;
 static const int READ_BUFFER_SIZE = 1024 * 1024;
 
 namespace Jvm{
-	sp_ByteBuffer JarByteBufferSource::get_bytes(string name){
+
+	JarByteBufferSource::JarByteBufferSource(std::string jar_name) : jar_name(jar_name) {}
+
+	ByteBuffer* JarByteBufferSource::get_bytes(string name){
 		FILE *p_file;
 		p_file = fopen(jar_name.c_str(), "r");
 		if((long)p_file < 1){
@@ -26,15 +29,18 @@ namespace Jvm{
 		}
 		int bytes_read = fread(read_buffer.data, 1, READ_BUFFER_SIZE, p_file);
 		pclose(p_file);
-		sp_ByteBuffer result;
+		ByteBuffer* result = NULL;
 		if(bytes_read == 0){
 			return result;
 		}else{
-			result = sp_ByteBuffer(new ByteBuffer(bytes_read));
+			result = new ByteBuffer(bytes_read);
 			for(int i=0; i < bytes_read; i++)
 				result->data[i] = read_buffer.data[i];
 			return result;
 		}
 	}
 
+	JarByteBufferSource::~JarByteBufferSource(){
+		if(logger.is_trace()) logger.log_trace() << "JarByteBufferSource destructor called (delete_me) " << endl;
+	}
 }

@@ -5,16 +5,18 @@
 
 #include "../Exception.hpp"
 
+#include <iostream>
+#include <fstream>
+
 namespace Jvm{
 
 	class SingleFileByteBufferSource : public ByteBufferSource {
 		std::string folder;
 	public:
-		SingleFileByteBufferSource(std::string folder) : folder(folder){}
-		virtual sp_ByteBuffer get_bytes(std::string name);	
+		SingleFileByteBufferSource(std::string folder);
+		virtual ByteBuffer* get_bytes(std::string name);	
+		~SingleFileByteBufferSource();
 	};
-
-	typedef boost::shared_ptr<SingleFileByteBufferSource> sp_SingleFileByteBufferSource;
 
 }
 

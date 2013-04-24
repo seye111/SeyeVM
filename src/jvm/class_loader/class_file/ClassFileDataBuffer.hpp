@@ -6,9 +6,7 @@
 #include "../../Exception.hpp"
 
 #include <string>
-#include <boost/shared_ptr.hpp>
 
-using boost::shared_ptr;
 using std::string;
 
 namespace Jvm{
@@ -29,7 +27,7 @@ namespace Jvm{
 	////////////////////////////////////////////////////////////////////////////////
 
 		class ClassFileDataBuffer {
-		sp_ByteBuffer sp_byte_buffer;
+		ByteBuffer* p_byte_buffer;
 		char* data;
 		int size;
 		int pos;
@@ -37,7 +35,7 @@ namespace Jvm{
 
 		public:
 		
-		ClassFileDataBuffer (sp_ByteBuffer sp_byte_buffer);
+		ClassFileDataBuffer (ByteBuffer* p_byte_buffer);
 		long get_u4();
 		int get_u2();
 		int get_u1();
@@ -50,8 +48,6 @@ namespace Jvm{
 		~ClassFileDataBuffer ();
 
 	};
-
-	typedef shared_ptr<ClassFileDataBuffer> sp_ClassFileDataBuffer;
 
 }
 

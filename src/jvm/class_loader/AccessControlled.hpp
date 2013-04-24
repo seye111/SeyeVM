@@ -45,6 +45,8 @@ namespace Jvm{
 		bool is_abstract() {return ((access_flags & ACC_ABSTRACT) > 0);}
 		bool is_strict() {return ((access_flags & ACC_STRICT) > 0);}
 	
+		virtual ~AccessControlled(){}
+
 		std::string get_access_string();
 	};
 

@@ -3,27 +3,32 @@
 
 #include "JvmClass.hpp"
 
-#include "../AccessControlled.hpp"
+#include "../class_file/ClassFileMember.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include "../../util/shared_ptr.hpp"
+
+#include "../AccessControlled.hpp"
 
 namespace Jvm{
 
+
 	class JvmClass;
-	typedef boost::shared_ptr<JvmClass> sp_JvmClass;
 
 	class JvmMember : public AccessControlled {
 	public:
-		sp_JvmClass sp_jvm_class;
 		JvmClass & jvm_class;
+		ClassFileMember & class_file_member;
 		std::string name;
 		std::string descriptor;
 		int index;
 
-		JvmMember(sp_JvmClass sp_jvm_class) : sp_jvm_class(sp_jvm_class), jvm_class(*sp_jvm_class) {}	
+		JvmMember(JvmClass & jvm_class, ClassFileMember & class_file_member) : jvm_class(jvm_class), class_file_member(class_file_member) {}
+		
+		virtual ~JvmMember(){
+			if(logger.is_trace()) logger.log_trace() << "JvmMember destructor called (delete_me) " << endl;
+		}
 	};
 
-	typedef boost::shared_ptr<JvmMember> sp_JvmMember;
 
 }
 

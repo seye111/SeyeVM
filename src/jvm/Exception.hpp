@@ -2,36 +2,34 @@
 #define JVM_EXCEPTION_H
 
 #include <exception>
-#include <fstream>
 #include <string>
 
-using std::ifstream;
-using std::ios;
-using std::exception;
-using std::string;
+namespace Jvm{
 
-class SimpleException : public exception {
+	class SimpleException : public std::exception {
 
-	string what_text;
+		std::string what_text;
 
-public:
+	public:
 
-	SimpleException(string what_text) : what_text(what_text) {}
+		SimpleException(std::string what_text) : what_text(what_text) {}
+		virtual ~SimpleException() throw() {}
 
-	const char* what() {return what_text.c_str();}
+		const char* what() {return what_text.c_str();}
 
-	virtual ~SimpleException() throw() {}
+	};
 
-};
+	class JvmException : public SimpleException {
+	public:
+		JvmException(std::string what_text) : SimpleException(what_text) {}
+		//~virtual JvmException() throw() {}
+	};
 
-class JvmException : public SimpleException {
-public:
-	JvmException(string what_text) : SimpleException(what_text) {}
-};
+	class JvmIntsructionNotImplementedException : public JvmException {
+	public:
+		JvmIntsructionNotImplementedException(std::string what_text) : JvmException(what_text) {}
+		//~virtual JvmIntsructionNotImplementedException() throw() {}
+	};
 
-class JvmIntsructionNotImplementedException : public JvmException {
-public:
-	JvmIntsructionNotImplementedException(string what_text) : JvmException(what_text) {}
-};
-
+}
 #endif

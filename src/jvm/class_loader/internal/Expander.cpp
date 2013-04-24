@@ -1,3 +1,5 @@
+#include "../../Jvm.hpp"
+
 #include "Expander.hpp"
 
 #include "../../runtime/InstructionSet.hpp"
@@ -12,9 +14,6 @@ using std::endl;
 
 namespace Jvm{
 
-	typedef std::pair<string, sp_JvmField> f_map_entry;
-	typedef std::pair<string, sp_JvmMethod> m_map_entry;
-
 	void Expander::expand_class_representation(const string & name){
 		if(logger.is_info()) logger.log_info() 
 			<< indent << name << " : expanding..." << endl;
@@ -28,7 +27,7 @@ namespace Jvm{
 			throw JvmException (os.str());
 		}
 
-		jvm_class.access_flags = cfr.access_flags;
+		jvm_class.access_flags = class_file_representation.access_flags;
 		if(logger.is_info()) logger.log_info() 
 			<< indent << jvm_class.name << " : access specifiers [" 
 				<< jvm_class.get_access_string() << "]" << endl; 
@@ -40,7 +39,7 @@ namespace Jvm{
 			string super_class_name = get_super_class_name();
 			if(logger.is_debug()) logger.log_debug() 
 				<< indent << jvm_class.name << " : super class name : " << super_class_name << endl;
-			jvm_class.super_class = class_loader.get_class(super_class_name, depth + 1);
+			jvm_class.super_class = &class_loader.get_class(super_class_name, depth + 1);
 		}
 		expand_interfaces();
 		expand_members();
@@ -52,14 +51,14 @@ namespace Jvm{
 		if(logger.is_debug()) logger.log_debug() 
 			<< indent << jvm_class.name << " : " 
 			<< "expanding interfaces..." << endl;
-		for(int index = 0; index < cfr.interfaces.size(); index++){
-			int name_index = ((ConstantClass*)check_and_get(cfr.interfaces[index], 
+		for(int index = 0; index < class_file_representation.interfaces.size(); index++){
+			int name_index = ((ConstantClass*)check_and_get(class_file_representation.interfaces[index], 
 				CONSTANT_CLASS))->name_index;
 			string interface_name = get_string(name_index);
 			if(logger.is_debug()) logger.log_debug() 
 				<< indent << jvm_class.name << " : " 
 				<< interface_name << endl;
-			jvm_class.interfaces.push_back(class_loader.get_class(interface_name, depth + 1));	
+			jvm_class.interfaces.push_back(&class_loader.get_class(interface_name, depth + 1));	
 		}
 	}
 
@@ -78,41 +77,40 @@ namespace Jvm{
 		int static_data_8_offset = 0;
 		int instance_data_4_offset = 0;
 		int instance_data_8_offset = 0;
-		for(int index=0; index < cfr.fields.size(); index++){
-			ClassFileMember & cf_field = cfr.fields[index];
-			sp_JvmField sp_jvm_field(new JvmField(sp_jvm_class));
-			JvmField & jvm_field = *sp_jvm_field;
+		for(int index=0; index < class_file_representation.fields.size(); index++){
+			ClassFileMember* p_cf_field = class_file_representation.fields[index];
+			JvmField* p_jvm_field = new JvmField(jvm_class, *p_cf_field);
 			
-			jvm_field.name = get_string(cf_field.name_index);
-			jvm_field.descriptor = get_string(cf_field.descriptor_index);
-			jvm_field.access_flags = cf_field.access_flags;
+			p_jvm_field->name = get_string(p_cf_field->name_index);
+			p_jvm_field->descriptor = get_string(p_cf_field->descriptor_index);
+			p_jvm_field->access_flags = p_cf_field->access_flags;
 			if(logger.is_debug()) logger.log_debug() 
-				<< indent << jvm_class.name << " : [" << jvm_field.get_access_string() << "] " 
-				<< jvm_field.name << " : " 
-				<< jvm_field.descriptor << endl;
-			if(jvm_field.is_static()){
-				sp_jvm_class->static_fields.insert(
-					f_map_entry(jvm_field.descriptor + "0" + jvm_field.name, sp_jvm_field));
+				<< indent << jvm_class.name << " : [" << p_jvm_field->get_access_string() << "] " 
+				<< p_jvm_field->name << " : " 
+				<< p_jvm_field->descriptor << endl;
+			
+			string map_key = p_jvm_field->descriptor + "0" + p_jvm_field->name;
+			if(p_jvm_field->is_static()){
+				jvm_class.static_fields[map_key] = p_jvm_field;
 			}else{
-				sp_jvm_class->instance_fields.insert(
-					f_map_entry(jvm_field.descriptor + "0" + jvm_field.name, sp_jvm_field));
+				jvm_class.instance_fields[map_key] = p_jvm_field;
 			}
 
-			int width = get_width(jvm_field.descriptor);
-			if(jvm_field.is_static()){
+			int width = get_width(p_jvm_field->descriptor);
+			if(p_jvm_field->is_static()){
 				if(width == 4){
-					jvm_field.offset = static_data_4_offset;
+					p_jvm_field->offset = static_data_4_offset;
 					++static_data_4_offset;
 				}else{
-					jvm_field.offset = static_data_8_offset;
+					p_jvm_field->offset = static_data_8_offset;
 					++static_data_8_offset;
 				}
 			}else{
 				if(width == 4){
-					jvm_field.offset = instance_data_4_offset;
+					p_jvm_field->offset = instance_data_4_offset;
 					++instance_data_4_offset;
 				}else{
-					jvm_field.offset = instance_data_8_offset;
+					p_jvm_field->offset = instance_data_8_offset;
 					++instance_data_8_offset;
 				}
 			}
@@ -157,10 +155,10 @@ namespace Jvm{
 		if(logger.is_debug()) logger.log_debug() 
 			<< indent << jvm_class.name << " : "
 			"loading v_table from superclass (if any)" << endl;
-		if(jvm_class.super_class.get()){
-			vector<sp_JvmMethod> super_v_table = jvm_class.super_class->v_table;
+		if(jvm_class.super_class){
+			vector<JvmMethod*> & super_v_table = jvm_class.super_class->v_table;
 			for(int i=0; i < super_v_table.size(); i++){
-				sp_JvmMethod pjm = super_v_table[i];
+				JvmMethod* pjm = super_v_table[i];
 				jvm_class.v_table.push_back(pjm);
 				if(logger.is_debug()) logger.log_debug() 
 					<< indent << jvm_class.name << " : "
@@ -179,86 +177,87 @@ namespace Jvm{
 
 
 
-		for(int index=0; index < cfr.methods.size(); index++){
-			ClassFileMember & cf_method = cfr.methods[index];
-			sp_JvmMethod sp_jvm_method(new JvmMethod(sp_jvm_class));
-			JvmMethod & jvm_method = *sp_jvm_method;
+		for(int index=0; index < class_file_representation.methods.size(); index++){
+			ClassFileMember* p_cf_method = class_file_representation.methods[index];
 			
-			jvm_method.name = get_string(cf_method.name_index);
-			jvm_method.descriptor = get_string(cf_method.descriptor_index);
+			JvmMethod* p_jvm_method = new JvmMethod(jvm_class, *p_cf_method);
 			
-			jvm_method.access_flags = cf_method.access_flags;
+			p_jvm_method->name = get_string(p_cf_method->name_index);
+			p_jvm_method->descriptor = get_string(p_cf_method->descriptor_index);
+			
+			p_jvm_method->access_flags = p_cf_method->access_flags;
 			
 			if(logger.is_debug()) logger.log_debug() 
-				<< indent << jvm_class.name << " : [" << jvm_method.get_access_string() << "] " 
-				<< jvm_method.name << " : " 
-				<< jvm_method.descriptor << endl;
+				<< indent << jvm_class.name << " : [" << p_jvm_method->get_access_string() << "] " 
+				<< p_jvm_method->name << " : " 
+				<< p_jvm_method->descriptor << endl;
 
-
-
-
-			if(jvm_method.is_static()){
-				sp_jvm_class->static_methods.insert(
-					m_map_entry(jvm_method.descriptor + "0" + jvm_method.name, sp_jvm_method));
+			string map_key = p_jvm_method->descriptor + "0" + p_jvm_method->name;
+			if(p_jvm_method->is_static()){
+				if(logger.is_trace()) logger.log_trace() << "adding static method to map (delete_me) " << endl;
+				jvm_class.static_methods[map_key] = p_jvm_method;
+				if(logger.is_trace()) logger.log_trace() << "added static method to map (delete_me) " << endl;
 			}else{
-				string key = jvm_method.descriptor + "0" + jvm_method.name; 
-				sp_jvm_class->instance_methods.insert(
-					m_map_entry(key, sp_jvm_method));
-				if(jvm_class.super_class.get()){
+				jvm_class.instance_methods[map_key] = p_jvm_method;
+				if(jvm_class.super_class){
 					// check to see if this method is in the superclasses v_table
-					map<string, sp_JvmMethod> scim = jvm_class.super_class->instance_methods;
-					map<string, sp_JvmMethod>::iterator it = scim.find(key);
+					map<string, JvmMethod*> scim = jvm_class.super_class->instance_methods;
+					map<string, JvmMethod*>::iterator it = scim.find(map_key);
 					if(it != scim.end()){
 						if(logger.is_debug()) logger.log_debug() 
 							<< indent << jvm_class.name << " : "
 							<< "overrides superclass method " << endl;
 						int v_table_index = it->second->v_table_index;
-						jvm_class.v_table[v_table_index] = sp_jvm_method;
-						jvm_method.v_table_index = v_table_index;
+						jvm_class.v_table[v_table_index] = p_jvm_method;
+						p_jvm_method->v_table_index = v_table_index;
 					}else{
 						if(logger.is_debug()) logger.log_debug() 
 							<< indent << jvm_class.name << " : "
 							<< "doesn't override superclass method " << endl;
-						jvm_method.v_table_index = jvm_class.v_table.size();
-						jvm_class.v_table.push_back(sp_jvm_method);
+						p_jvm_method->v_table_index = jvm_class.v_table.size();
+						jvm_class.v_table.push_back(p_jvm_method);
 					}
 				}else{
 					if(logger.is_debug()) logger.log_debug() 
 						<< indent << jvm_class.name << " : "
 						<< "doesn't override superclass method " << endl;
-					jvm_method.v_table_index = jvm_class.v_table.size();
-					jvm_class.v_table.push_back(sp_jvm_method);
+					p_jvm_method->v_table_index = jvm_class.v_table.size();
+					jvm_class.v_table.push_back(p_jvm_method);
 				}
 				if(logger.is_debug()) logger.log_debug() 
 					<< indent << jvm_class.name << " : "
-					<< "v_table_index is " << jvm_method.v_table_index << endl;
+					<< "v_table_index is " << p_jvm_method->v_table_index << endl;
 			}
 
-			expand_method_attributes(cf_method, jvm_method);
+			if(logger.is_trace()) logger.log_trace() << "calling expand attribute (delete_me) " << endl;
+			expand_method_attributes(*p_cf_method, *p_jvm_method);
+			if(logger.is_trace()) logger.log_trace() << "back from expand attribute (delete_me) " << endl;
 		}
 	}
 
 	void Expander::expand_method_attributes(ClassFileMember & cf_method, JvmMethod & jvm_method){
+		if(logger.is_trace()) logger.log_trace() << "expand attribute (delete_me) " << &jvm_method << endl;
 		for(int i=0; i < cf_method.attributes.size(); i++){
-			Attribute* attribute = cf_method.attributes[i].get();
+			Attribute* attribute = cf_method.attributes[i];
 			switch(attribute->get_tag()){
 				case ATTRIBUTE_CODE:
 					if(logger.is_debug()) logger.log_debug() 
 						<< indent << jvm_class.name << " : expanding code" << endl;  
-					CodeAttribute *p_attr = (CodeAttribute*)attribute;
-					jvm_method.max_stack = p_attr->max_stack;
-					jvm_method.max_locals = p_attr->max_locals;
-					jvm_method.code_length = p_attr->code_length;
+					CodeAttribute *p_code_attr = (CodeAttribute*)attribute;
+					jvm_method.max_stack = p_code_attr->max_stack;
+					jvm_method.max_locals = p_code_attr->max_locals;
+					jvm_method.code_length = p_code_attr->code_length;
 					if(logger.is_debug()) logger.log_debug() 
 						<< indent << jvm_class.name << " : code length - " 
 						<< jvm_method.code_length << endl;
-					jvm_method.instructions = new Instruction*[p_attr->code_length];
-					Instruction* instructions = class_loader.sp_runtime->instruction_set.instructions;
-					jvm_method.code = p_attr->code;
-					char* code_bytes = p_attr->code->data;
+					jvm_method.instructions = new Instruction*[p_code_attr->code_length];
+					Instruction* instructions = class_loader.jvm.runtime.instruction_set.instructions;
+					jvm_method.code_length = p_code_attr->code_length;
+					jvm_method.code = p_code_attr->code;
+					char* code_bytes = p_code_attr->code;
  					for(int ci = 0; ci < jvm_method.code_length; ci++){
 						Instruction* instruction = &instructions[255 & code_bytes[ci]];
-						if(logger.is_debug()) logger.log_debug() 
+						if(logger.is_trace()) logger.log_trace() 
 							<< indent << jvm_class.name << " : [" << ci << "]  "
 							<< instruction->opcode << " - " <<instruction->name  << " (" 
 							<< instruction->arg_count << ")" << endl;
@@ -276,12 +275,12 @@ namespace Jvm{
 	}
 
 	string & Expander::get_class_name(){
-		int name_index = ((ConstantClass*)check_and_get(cfr.this_class, CONSTANT_CLASS))->name_index;
+		int name_index = ((ConstantClass*)check_and_get(class_file_representation.this_class, CONSTANT_CLASS))->name_index;
 		return get_string(name_index);
 	}
 
 	string & Expander::get_super_class_name(){
-		int name_index = ((ConstantClass*)check_and_get(cfr.super_class, CONSTANT_CLASS))->name_index;
+		int name_index = ((ConstantClass*)check_and_get(class_file_representation.super_class, CONSTANT_CLASS))->name_index;
 		return get_string(name_index);
 	}
 
@@ -301,7 +300,7 @@ namespace Jvm{
 	//  handle inconsistencies gracefully anyway
 	//
 	ConstantPoolEntry* Expander::check_and_get(int index, int tag){
-		int max_index = cp.size() - 1;
+		int max_index = constant_pool.size() - 1;
 		if(index < 0 || index > max_index){
 			ostringstream os;
 			os << "index " << index << " outside range [0-"
@@ -314,7 +313,7 @@ namespace Jvm{
 				<< CONSTANT_MAX_TAG << "] for constant pool"; 
 			throw JvmException (os.str());
 		}
-		ConstantPoolEntry* entry = cp[index].get();
+		ConstantPoolEntry* entry = constant_pool[index];
 		if(entry->get_tag() != tag){
 			ostringstream os;
 			os << "tag mismatch at index " << index 

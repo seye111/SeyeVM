@@ -6,7 +6,7 @@
 #include "ClassFileDataBuffer.hpp"
 
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include "../../util/shared_ptr.hpp"
 
 namespace Jvm{
 
@@ -20,12 +20,17 @@ namespace Jvm{
 	////////////////////////////////////////////////////////////////////////////////
 
 	class ClassFileParser{
-		static void check_magic(long magic) throw (JvmException);
-		static void load_constant_pool(ClassFileDataBuffer & buffer, std::vector<sp_ConstantPoolEntry> & constant_pool);
-		static void parse_attributes(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, std::vector<sp_Attribute> & attributes);
-		static void parse_members(ClassFileDataBuffer & buffer, ClassFileRepresentation & cfrep, std::vector<ClassFileMember> & members);
+		ClassFileDataBuffer & buffer;
+		ClassFileRepresentation* p_class_file_representation;
+
+		void check_magic(long magic);
+		void load_constant_pool();
+		void parse_attributes(std::vector<Attribute*> & attributes);
+		void parse_members(std::vector<ClassFileMember*> & members);
 	public:
-		static boost::shared_ptr<ClassFileRepresentation> parse_from_buffer (ClassFileDataBuffer & buffer);
+		ClassFileParser(ClassFileDataBuffer & buffer);
+		~ClassFileParser();
+		ClassFileRepresentation* parse_from_buffer ();
 	};
 
 }

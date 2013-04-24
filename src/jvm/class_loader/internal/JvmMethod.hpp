@@ -4,10 +4,8 @@
 #include "JvmMember.hpp"
 
 #include "../../runtime/Instruction.hpp"
-
+#include "../class_file/ClassFileMember.hpp"
 #include "../ByteBuffer.hpp"
-
-#include <boost/shared_ptr.hpp>
 
 namespace Jvm{
 
@@ -17,23 +15,22 @@ namespace Jvm{
 		int max_stack;
 		int max_locals;
 		int code_length;
-		sp_ByteBuffer code;
+		char* code;
 		Instruction** instructions;
 	
-		JvmMethod(sp_JvmClass sp_jvm_class) : 
-			JvmMember(sp_jvm_class),
+		JvmMethod(JvmClass & jvm_class, ClassFileMember & class_file_member) : 
+			JvmMember(jvm_class, class_file_member),
 			v_table_index(-1), 
 			max_stack(0), 
 			max_locals(0), 
 			code_length(0), 
 			instructions(NULL) {}
 
-		~JvmMethod(){
+		virtual ~JvmMethod(){
+			if(logger.is_trace()) logger.log_trace() << "JvmMethod destructor called (delete_me) " << endl;
 			delete[] instructions;
 		}
 	};
-
-	typedef boost::shared_ptr<JvmMethod> sp_JvmMethod;
 
 }
 
